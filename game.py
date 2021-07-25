@@ -20,6 +20,7 @@ class Game:
         self.state_stack = []
 
     def new(self):
+        """Starting a new game"""
         self.setup_directories()
         self.load_first_state()
         self.game_loop()
@@ -62,9 +63,15 @@ class Game:
         self.previous_time = now
 
     def setup_directories(self) -> None:
-        self.asset_directory = os.path.join("assets")
         self.sprite_directory = os.path.join("sprites")
-
+        self.state_directory = os.path.join("states")
+        self.tilemap_directory = os.path.join("tilemaps")
+        # Assets
+        self.asset_directory = os.path.join("assets")
+        self.font_directory = os.path.join(self.asset_directory, "fonts")
+        self.image_directory = os.path.join(self.asset_directory, "images")
+        self.tile_directory = os.path.join(self.image_directory, "tiles")
+        
     def shut_down(self) -> None:
         """Completley shutting down the game."""
         self.playing = False

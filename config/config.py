@@ -1,9 +1,9 @@
-import json
+import json, csv, os
 
-with open("config/options.json", "r", encoding="utf-8") as options_json_file:
+with open(os.path.join("config", "options.json"), "r", encoding="utf-8") as options_json_file:
     options = json.load(options_json_file)
 
-with open("config/colours.json", "r") as colours_json_file:
+with open(os.path.join("config", "colours.json"), "r") as colours_json_file:
     colours = json.load(colours_json_file)
 
     for colour in colours:
@@ -20,3 +20,4 @@ with open("config/colours.json", "r") as colours_json_file:
         
         # Make all the lists with RGB values into tuples.
         colours[colour] = tuple(colours[colour])
+
