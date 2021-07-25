@@ -1,0 +1,8 @@
+{
+    "game_height": 300,
+    "game_width": 300,
+    "window_title": "Romspill",
+    "fps": 60,
+    "tilesize": 16,
+    "scale": 3
+}
