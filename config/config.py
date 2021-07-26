@@ -1,5 +1,5 @@
 from hub import loadImage
-import json, csv, os
+import json, os, math
 
 with open(os.path.join("config", "options.json"), "r", encoding="utf-8") as options_json_file:
     options = json.load(options_json_file)
@@ -22,10 +22,22 @@ with open(os.path.join("config", "colours.json"), "r") as colours_json_file:
         # Make all the lists with RGB values into tuples.
         colours[colour] = tuple(colours[colour])
 
-# with open(os.path.join("config", "tile_keys.json"), "r") as tile_key_json_file:
-#     tile_keys = json.load(tile_key_json_file)
+with open(os.path.join("config", "tile_keys.json"), "r") as tile_key_json_file:
+    tile_keys = json.load(tile_key_json_file)
 
-#     print(tile_keys)
-#     tile_keys = {int(key):loadImage(os.path.join("assets", "images", "tiles", value)) for (key,value) in tile_keys.items()}
-#     print(tile_keys)
+    for tile_key in tile_keys:
+        if math.isnan(int(tile_key)):
+            raise ValueError(f"In tile {tile_keys[tile_key]}: The key {tile_key} is not a number, so it can't represent a tile.")
 
+    tile_keys = {int(key):loadImage(os.path.join("assets", "images", "tiles", value)) for (key,value) in tile_keys.items()}
+
+
+assets = os.path.join("assets", "images", "tiles")
+
+tile_keys = {
+    0: loadImage(os.path.join(assets, "dirt.jpg")),
+    1: loadImage(os.path.join(assets, "grass.jpg")),
+    2: loadImage(os.path.join(assets, "block.png")),
+    3: loadImage(os.path.join(assets, "brick.png")),
+    4: loadImage(os.path.join(assets, "mushroom.png"))
+}

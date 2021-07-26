@@ -10,9 +10,12 @@ class Game_world(State):
     def __init__(self, game):
         """Initialize the game world class."""
         super().__init__(game)
+        temp_background = pygame.Surface(self.game.GAME_SIZE)
+        temp_background.fill(colours["blue"])
         self.levels = {
             1: Level(self,
                 os.path.join(self.game.tilemap_directory, "level-1.csv"),
+                temp_background,
                 0, 0
             )
         }

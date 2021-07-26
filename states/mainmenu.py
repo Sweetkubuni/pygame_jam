@@ -9,10 +9,6 @@ class Main_menu(State):
     def __init__(self, game):
         """Initialize the menu class."""
         super().__init__(game)
-        self.image_paths = {
-            "main-menu-bg": os.path.join(self.game.asset_directory, "images", "main-menu", "background.jpg")
-        }
-        self.images = {k:pygame.image.load(v) for k,v in self.image_paths.items()}
         self.load_sprites()
 
     def load_sprites(self):

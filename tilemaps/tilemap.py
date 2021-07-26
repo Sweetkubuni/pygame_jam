@@ -1,6 +1,6 @@
 import pygame, os, csv
 from sprites.tile import Tile
-from hub import tile_keys
+from config.config import tile_keys
 
 class Tile_map:
     def __init__(self, csv_filepath):
