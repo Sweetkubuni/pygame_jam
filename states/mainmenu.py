@@ -27,5 +27,5 @@ class Main_menu(State):
 
     def render(self):
         """Render the menu state."""
-        self.game.game_canvas.fill(colours["green"]) #temporary
+        self.game.game_canvas.fill(colours["cyan"]) #temporary
         self.all_sprites.draw(self.game.game_canvas)
