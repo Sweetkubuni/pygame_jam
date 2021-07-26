@@ -1,4 +1,5 @@
 import pygame
+from config.config import colours
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x , y):
@@ -6,7 +7,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         self.image = pygame.Surface((16,32))
-        self.image.fill((255,0,0))
+        self.image.fill(colours["red"])
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         self.x, self.y = float(x), float(y) # xL: For more presice movement, we use floats instead of rect's int
@@ -28,8 +29,8 @@ class Player(pygame.sprite.Sprite):
             pass
 
         # xL: Applies the speed to the position
-        self.x += self.speed_x
-        self.y += self.speed_y
+        self.x += self.speed_x * self.game.delta_time
+        self.y += self.speed_y * self.game.delta_time
         
         # xL: Check collisions horizontally and then vertically
         self.rect.x = int(self.x)
