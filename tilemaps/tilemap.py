@@ -1,11 +1,10 @@
 import pygame, os, csv
 from sprites.tile import Tile
-
+from hub import tile_keys
 
 class Tile_map:
-    def __init__(self, csv_filepath, tile_image_paths: dict):
+    def __init__(self, csv_filepath):
         self.csv_filepath = csv_filepath
-        self.tile_image_paths: dict = tile_image_paths
         self.tile_size = 16
         self.start_x, self.start_y = 0, 0
 
@@ -23,9 +22,9 @@ class Tile_map:
         for row in tile_map_template:
             x = 0
             for tile in row:
-                for tile_key in self.tile_image_paths:
+                for tile_key in tile_keys:
                     if tile == tile_key:
-                        tiles.add(Tile(self.tile_image_paths[tile_key], x * self.tile_size, y * self.tile_size))
+                        tiles.add(Tile(tile_keys[tile_key], x * self.tile_size, y * self.tile_size))
                 x += 1
             y += 1
         self.width, self.height = x * self.tile_size, y * self.tile_size

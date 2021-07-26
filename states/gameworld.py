@@ -3,30 +3,28 @@ from config.config import colours
 from hub import loadImage
 from tilemaps.tilemap import Tile_map
 from states.state import State
+from levels.level import Level
 
 class Game_world(State):
     """The game world"""
     def __init__(self, game):
         """Initialize the game world class."""
         super().__init__(game)
-        self.tile_map = Tile_map(
-            os.path.join(self.game.tilemap_directory, "game-world.csv"), 
-            {
-                0: loadImage(os.path.join(self.game.tile_directory, "dirt.jpg")),
-                1: loadImage(os.path.join(self.game.tile_directory, "grass.jpg")),
-                2: loadImage(os.path.join(self.game.tile_directory, "sky.jpg")),
-                3: loadImage(os.path.join(self.game.tile_directory, "cave.jpg"))
-            }
-        )
-        self.tiles = self.tile_map.load_tiles()
+        self.levels = {
+            1: Level(self,
+                os.path.join(self.game.tilemap_directory, "level-1.csv"),
+                0, 0
+            )
+        }
+        self.change_level(self.levels[1])
         
+    def change_level(self, new_level):
+        self.current_level = new_level
 
     def update(self):
         """Update the menu state."""
-        if self.game.actions[pygame.K_RETURN]:
-            game_world = Game_world(self.game)
-            game_world.enter_state()
+        self.current_level.update()
 
     def render(self):
         """Render the menu state."""
-        self.tiles.draw(self.game.game_canvas)
+        self.current_level.render()

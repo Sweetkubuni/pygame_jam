@@ -1,6 +1,8 @@
 import pygame, time, os
 from config.config import options, colours
 from states.mainmenu import Main_menu
+from sprites.player import Player
+from levels.level import Level
 
 class Game:
     """The game object, used to control the game."""
@@ -18,6 +20,8 @@ class Game:
         self.actions = pygame.key.get_pressed()
         self.delta_time, self.previous_time = 0, 0
         self.state_stack = []
+        self.player = Player(self, 0, 0)
+        
 
     def new(self):
         """Starting a new game"""
