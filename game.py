@@ -11,11 +11,12 @@ class Game:
         pygame.init()
         pygame.display.set_caption(options["window_title"])
         self.scale = options["scale"]
-        self.SCREEN_SIZE = self.SCREEN_WIDTH, self.SCREEN_HEIGHT = options["game_width"] * self.scale, options["game_height"] * self.scale
-        self.screen = pygame.display.set_mode(self.SCREEN_SIZE)
+        self.SCREEN_SIZE = self.SCREEN_WIDTH, self.SCREEN_HEIGHT = options["game_width"], options["game_height"]
+        self.screen = pygame.display.set_mode((self.SCREEN_WIDTH*self.scale, self.SCREEN_HEIGHT*self.scale))
         self.GAME_SIZE = self.GAME_WIDTH, self.GAME_HEIGHT = options["game_width"], options["game_height"]
         self.game_canvas = pygame.Surface(self.GAME_SIZE)
         self.clock = pygame.time.Clock()
+        self.MAX_FPS = options["fps"]
         self.running, self.playing = True, True
         self.actions = pygame.key.get_pressed()
         self.delta_time, self.previous_time = 0, 0
@@ -45,8 +46,9 @@ class Game:
         """Renders the needed opponents according to the current game state."""
         self.state_stack[-1].render()
 
-        self.screen.blit(pygame.transform.scale(self.game_canvas, self.SCREEN_SIZE), (0, 0))
+        self.screen.blit(pygame.transform.scale(self.game_canvas, (self.SCREEN_WIDTH*self.scale, self.SCREEN_HEIGHT*self.scale)), (0, 0))
         pygame.display.update()
+        self.clock.tick(self.MAX_FPS)
 
     def check_inputs(self) -> None:
         """Checking for inputs from the user."""
@@ -64,6 +66,7 @@ class Game:
         """Getting the time used between frames. Used to calculate movement so its universal across frame rates."""
         now = time.time()
         self.delta_time = now - self.previous_time
+        self.delta_time *= self.MAX_FPS
         self.previous_time = now
 
     def setup_directories(self) -> None:
