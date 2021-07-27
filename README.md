@@ -3,6 +3,13 @@ Not finished; just started brainstorming ideas!
 
 
 TO DO LIST:
-- Add physics.py
-- Add animation
+- Code physics.py (narra + Lainik)
+- Code animation systam (xLainik)
+- Code Enemy class
+- Code Power ups/Item class
+- Code camera class
 - 
+- Draw tiles (narra + jinna)
+- Draw player sprite and animations
+- 
+- Music and sounds (jinna)
