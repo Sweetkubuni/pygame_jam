@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
         if self.game.actions[pygame.K_LEFT]:
             self.speed_x += -1
         if self.game.actions[pygame.K_UP] or self.game.actions[pygame.K_SPACE]:
-            if self.grounded: #and self.jump_delay < 0:
+            if self.grounded and self.jump_delay < 0:
                 self.jumping = True
                 self.grounded = False
                 self.jump_delay =  60
@@ -38,7 +38,7 @@ class Player(pygame.sprite.Sprite):
         if self.game.actions[pygame.K_z]:
             pass
 
-        #self.jump_delay -= self.game.delta_time
+        self.jump_delay -= self.game.delta_time
         if self.jumping:
             self.speed_y = -100/30
             if (self.start_height - self.y) >= self.jump_height:
@@ -53,7 +53,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = int(self.x)
         hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles, False)
 
-        collide_tolerance = 5
         for tile in hit_list:
             if self.speed_x > 0:
                 self.rect.right = tile.rect.left
@@ -66,6 +65,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = int(self.y)
         hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles, False)
 
+        collide_tolerance = 5
         for tile in hit_list:
             if abs(tile.rect.bottom - self.rect.top) < collide_tolerance:
                 self.jumping = False
