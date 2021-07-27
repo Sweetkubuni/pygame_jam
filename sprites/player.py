@@ -80,4 +80,4 @@ class Player(pygame.sprite.Sprite):
             self.y = self.rect.y
 
     def draw(self):
-        self.game.game_canvas.blit(self.image, self.rect)
+        self.game.game_canvas.blit(self.image, self.game.state_stack[-1].current_level.camera.apply(self))

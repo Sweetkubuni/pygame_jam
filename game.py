@@ -22,7 +22,6 @@ class Game:
         self.delta_time, self.previous_time = 0, 0
         self.state_stack = []
         self.player = Player(self, 0, 0)
-        
 
     def new(self):
         """Starting a new game"""
