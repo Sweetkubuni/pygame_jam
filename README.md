@@ -7,7 +7,7 @@ TO DO LIST:
 - Code animation systam (xLainik)
 - Code Enemy class
 - Code Power ups/Item class
-- Code camera class
+- Code camera class (Betel)
 - 
 - Draw tiles (narra + jinna)
 - Draw player sprite and animations
