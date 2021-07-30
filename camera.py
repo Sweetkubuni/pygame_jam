@@ -15,9 +15,9 @@ class Camera:
     def update(self, **kwargs):
         self.target = kwargs.get("new_target", self.target)
         
-        x = -self.target.rect.x + self.level.tilemap.width *.5
-        y = -self.target.rect.y + self.level.tilemap.height *.5
-        print("target x: " + str(self.target.rect.x) + " target y: " + str(self.target.rect.y) + " | camera x: " + str(x) + " camera y: " + str(y))
-        print()
+        x = -self.target.rect.x + self.width/2
+        y = -self.target.rect.y + self.height/2
+        #print("target x: " + str(self.target.rect.x) + " target y: " + str(self.target.rect.y) + " | camera x: " + str(x) + " camera y: " + str(y))
+        #print()
 
         self.rect = pygame.Rect(x, y, self.width, self.height)

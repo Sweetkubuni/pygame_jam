@@ -1,5 +1,6 @@
 import pygame, os, csv
 from sprites.tile import Tile
+from sprites.block import Block
 from config.config import tile_keys
 
 class Tile_map:
@@ -16,8 +17,8 @@ class Tile_map:
             tilemap = [[int(tile) for tile in row] for row in reader]
         return tilemap
     
-    def load_tiles(self):
-        tiles = pygame.sprite.Group()
+    def load_tiles_and_blocks(self):
+        tiles_and_blocks = pygame.sprite.Group()
         tile_map_template = self.read_csv()
         x, y = 0, 0
         for row in tile_map_template:
@@ -25,8 +26,12 @@ class Tile_map:
             for tile in row:
                 for tile_key in tile_keys:
                     if tile == tile_key:
-                        tiles.add(Tile(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size))
+                        if tile == 2 or tile == 3:
+                            # I'm passing the Block object , the tile_id as "tile" so each block has unique properties and interactions
+                            tiles_and_blocks.add(Block(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, True, tile))
+                        else:
+                            tiles_and_blocks.add(Tile(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, False))
                 x += 1
             y += 1
         self.width, self.height = x * self.tile_size, y * self.tile_size
-        return tiles
+        return tiles_and_blocks

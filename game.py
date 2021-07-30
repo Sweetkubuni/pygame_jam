@@ -77,6 +77,7 @@ class Game:
         self.font_directory = os.path.join(self.asset_directory, "fonts")
         self.image_directory = os.path.join(self.asset_directory, "images")
         self.tile_directory = os.path.join(self.image_directory, "tiles")
+        self.animation_directory = os.path.join(self.asset_directory, "animations")
         
     def shut_down(self) -> None:
         """Completley shutting down the game."""

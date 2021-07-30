@@ -6,7 +6,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         pygame.sprite.Sprite.__init__(self)
         self.game = game
-        self.image = pygame.Surface((16,32))
+        self.image = pygame.Surface((11,26))
         self.image.fill(colours["red"])
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -18,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.jumping = False
         self.jump_delay = -1;
         self.start_height = 0;
+        self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
     def update(self):
         # xL: Player movement controls
         self.speed_x = 0
@@ -50,20 +51,25 @@ class Player(pygame.sprite.Sprite):
         self.x += self.speed_x * self.game.delta_time
         self.y += self.speed_y * self.game.delta_time
 
+        # Collision direction from the player reference point
+        self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
+        
         self.rect.x = int(self.x)
-        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles, False)
+        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles_and_blocks, False)
 
         for tile in hit_list:
             if self.speed_x > 0:
                 self.rect.right = tile.rect.left
                 self.speed_x = 0
+                self.collision_directions["right"] = True
             elif self.speed_x < 0:
                 self.rect.left = tile.rect.right
                 self.speed_x = 0
+                self.collision_directions["left"] = True
             self.x = self.rect.x
 
         self.rect.y = int(self.y)
-        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles, False)
+        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles_and_blocks, False)
 
         collide_tolerance = 5
         for tile in hit_list:
@@ -74,9 +80,12 @@ class Player(pygame.sprite.Sprite):
             if self.speed_y > 0:
                 self.rect.bottom = tile.rect.top
                 self.speed_y = 0
+                self.collision_directions["bottom"] = True
             elif self.speed_y < 0:
                 self.rect.top = tile.rect.bottom
                 self.speed_y = 0
+                self.collision_directions["top"] = True
+                tile.delete = True
             self.y = self.rect.y
 
     def draw(self):
