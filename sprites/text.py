@@ -7,12 +7,12 @@ class Text(pygame.sprite.Sprite):
         self.anti_aliasing = anti_ailiasing
         self.update(content = content, colour = colour, is_centered = is_centered, x = x, y = y)
     
-    def update(self, **kwargs):
-        if kwargs["content"] != None: self.content = kwargs["content"]
-        if kwargs["colour"] != None: self.colour = kwargs["colour"]
-        if kwargs["is_centered"] != None: self.is_centered = kwargs["is_centered"]
-        if kwargs["x"] != None: self.x = kwargs["x"]
-        if kwargs["y"] != None: self.y = kwargs["y"]
+    def update(self, content = None, colour = None, is_centered = None, x = None, y = None):
+        if content != None: self.content = content
+        if colour != None: self.colour = colour
+        if is_centered != None: self.is_centered = is_centered
+        if x != None: self.x = x
+        if y != None: self.y = y
 
         self.image = self.font.render(self.content, self.anti_aliasing, self.colour)
         if self.is_centered:
