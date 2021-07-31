@@ -12,10 +12,11 @@ class Level:
             self.background = background
         else:
             self.background = loadImage(background)
-        self.tiles_and_blocks = self.tilemap.load_tiles_and_blocks()
+        self.tiles_and_blocks = self.tilemap.load_tiles_and_blocks(self.state.all_animations, self.state.all_sounds)
         self.start_pos = self.start_pos_x, self.start_y = start_x, start_y
         self.camera = Camera(self, self.state.game.player, self.state.game.GAME_WIDTH, self.state.game.GAME_HEIGHT)
         self.particles = []
+        self.state.game.player.level_init(self.state.all_animations, self.state.all_sounds, 32, 141)
 
     def update(self):
         self.state.game.player.update()
@@ -26,8 +27,9 @@ class Level:
             if tile.destructable: # The tile is a block
                 tile.update(self.state.game.player.rect)
                 if tile.delete:
+                    pygame.mixer.find_channel(True).play(tile.sounds["explodeBrick"])
                     block_remove_list.append(tile)
-                    self.particles.append(Particle(self.tilemap, tile.rect, self.state.all_animations["leaf particle"], True, (0,0), 2, 60, [1.047,2.094], 2))
+                    self.particles.append(Particle(self.tilemap, pygame.Rect(tile.x, tile.y, 10,10), self.state.all_animations["break particle"], False, (0,0), 2, 34, [1.047,2.094], 1.8))
             for block in block_remove_list:
                 self.tiles_and_blocks.remove(block)
 

@@ -13,7 +13,7 @@ class Main_menu(State):
 
     def load_sprites(self):
         self.all_sprites = pygame.sprite.Group()
-        main_menu = Text(os.path.join(self.game.font_directory,"FreePixel.ttf"), 20, "Press ENTER To Start!", colours["black"], False, self.game.GAME_WIDTH *.5, self.game.GAME_HEIGHT *.5, True)
+        main_menu = Text(os.path.join(self.game.font_directory,"alphbeta.ttf"), 20, "Press ENTER To Start!", colours["black"], False, self.game.GAME_WIDTH *.5, self.game.GAME_HEIGHT *.5, True)
         self.all_sprites.add(main_menu)
     
     

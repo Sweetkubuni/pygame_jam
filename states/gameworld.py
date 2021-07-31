@@ -21,7 +21,11 @@ class Game_world(State):
                 img.set_colorkey((0,0,0))
                 duration = frames.split("_")[-1].split(".")[0]
                 self.all_animations[animations].append([img, int(duration)])
-        
+
+        self.all_sounds = {}
+        for sound in os.listdir(self.game.sound_directory):
+            self.all_sounds[sound.split(".")[0]] = pygame.mixer.Sound(os.path.join(self.game.sound_directory, sound))
+                
         self.levels = {
             1: Level(self,
                 os.path.join(self.game.tilemap_directory, "level-1.csv"),

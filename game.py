@@ -1,4 +1,4 @@
-import pygame, time, os
+import pygame, time, os, sys
 from config.config import options, colours
 from states.mainmenu import Main_menu
 from sprites.player import Player
@@ -22,6 +22,9 @@ class Game:
         self.delta_time, self.previous_time = 0, 0
         self.state_stack = []
         self.player = Player(self, 0, 0)
+
+        pygame.mixer.init()
+        pygame.mixer.set_num_channels(5) # a maximum of 5 sounds can be playing at the same time
 
     def new(self):
         """Starting a new game"""
@@ -56,6 +59,9 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.shut_down()
+                pygame.display.quit()
+                pygame.quit()
+                sys.exit()
 
     def load_first_state(self) -> None:
         """Loading the first state of the game."""
@@ -78,6 +84,7 @@ class Game:
         self.image_directory = os.path.join(self.asset_directory, "images")
         self.tile_directory = os.path.join(self.image_directory, "tiles")
         self.animation_directory = os.path.join(self.asset_directory, "animations")
+        self.sound_directory = os.path.join(self.asset_directory, "sounds")
         
     def shut_down(self) -> None:
         """Completley shutting down the game."""

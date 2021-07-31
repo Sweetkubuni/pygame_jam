@@ -34,10 +34,15 @@ class Particle():
             # pseudo gravity
             particle[4] += 0.05
 
-            particle[0].rect.x, particle[0].rect.y = particle[1], particle[2]
+            particle[0].rect.x, particle[0].rect.y = int(particle[1]), int(particle[2])
+            
+            # applying blit offset to the animation
+            temp_rect = self.tilemap.level.camera.apply(particle[0])
+            temp_rect.x -= self.animation[2][0]
+            temp_rect.y -= self.animation[2][1]
 
-            self.tilemap.level.state.game.game_canvas.blit(self.animation[0][self.ani_frame][0], self.tilemap.level.camera.apply(particle[0]))
-            #pygame.draw.rect(layer, (250,0,0), self.rect)
+            self.tilemap.level.state.game.game_canvas.blit(self.animation[0][self.ani_frame][0], temp_rect)
+            # pygame.draw.rect(self.tilemap.level.state.game.game_canvas, (250,0,0), self.tilemap.level.camera.apply(particle[0]), width=2)
             
         self.timer += 1
 

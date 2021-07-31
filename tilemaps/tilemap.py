@@ -17,7 +17,8 @@ class Tile_map:
             tilemap = [[int(tile) for tile in row] for row in reader]
         return tilemap
     
-    def load_tiles_and_blocks(self):
+    def load_tiles_and_blocks(self, all_animations, all_sounds):
+        
         tiles_and_blocks = pygame.sprite.Group()
         tile_map_template = self.read_csv()
         x, y = 0, 0
@@ -28,7 +29,7 @@ class Tile_map:
                     if tile == tile_key:
                         if tile == 2 or tile == 3:
                             # I'm passing the Block object , the tile_id as "tile" so each block has unique properties and interactions
-                            tiles_and_blocks.add(Block(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, True, tile))
+                            tiles_and_blocks.add(Block(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, True, tile, all_animations, all_sounds))
                         else:
                             tiles_and_blocks.add(Tile(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, False))
                 x += 1
