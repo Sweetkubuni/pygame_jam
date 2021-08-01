@@ -14,7 +14,7 @@ class Level:
             self.background = background
         else:
             self.background = loadImage(background)
-        self.tiles_and_blocks = self.tilemap.load_tiles_and_blocks(self.state.all_animations, self.state.all_sounds)
+        self.tiles_and_blocks, self.enemies = self.tilemap.load_tiles_and_blocks(self.state.all_animations, self.state.all_sounds, self.state.game)
         self.start_pos = self.start_pos_x, self.start_y = start_x, start_y
         self.camera = Camera(self, self.state.game.player, self.state.game.GAME_WIDTH, self.state.game.GAME_HEIGHT)
         self.particles = []
@@ -23,6 +23,11 @@ class Level:
     def update(self):
         self.state.game.player.update()
         self.camera.update()
+
+        enemy_remove_list = []
+        i = 0
+        for enemy in self.enemies:
+            enemy.update()
         
         block_remove_list = []
         for tile in self.tiles_and_blocks.sprites():
@@ -60,5 +65,7 @@ class Level:
         self.state.game.player.draw()
         for tile in self.tiles_and_blocks.sprites():
             tile.draw()
+        for enemy in self.enemies:
+            enemy.draw()
         for particle in self.particles:
            particle.draw()
