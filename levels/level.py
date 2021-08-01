@@ -1,8 +1,10 @@
-import pygame, os
+import pygame, os, random
+
 from hub import loadImage
 from tilemaps.tilemap import Tile_map
 from camera import Camera
 from sprites.particle import Particle
+from sprites.coin import Coin
 
 class Level:
     def __init__(self, state, tilemap, background, start_x, start_y) -> None:
@@ -30,7 +32,9 @@ class Level:
                     self.state.game.player.attack_timer = -30
                     pygame.mixer.find_channel(True).play(tile.sounds["explodeBrick"])
                     block_remove_list.append(tile)
-                    self.particles.append(Particle(self.tilemap, pygame.Rect(tile.x, tile.y, 10,10), self.state.all_animations["break particle"], False, (0,0), 2, 34, [1.047,2.094], 1.8))
+                    self.particles.append(Particle(self.tilemap, pygame.Rect(tile.rect.centerx-5, tile.rect.centery-5, 10,10), self.state.all_animations["break particle"], False, (0,0), 2, 34, [1.047,2.094], 1.8))
+                    if random.random() < 0.33:
+                        self.particles.append(Coin(pygame.Rect(tile.rect.centerx-6, tile.rect.y-2, 13, 15), self.state.all_animations["coin"], 1050, 1.57, 1.3, self.state.all_sounds, self.state.game))
         block_remove_list.sort(reverse=True)
         for block in block_remove_list:
             self.tiles_and_blocks.remove(block)
@@ -39,8 +43,12 @@ class Level:
         particle_remove_list = []
         i = 0
         for particle in self.particles:
+            particle.update(self.state.game.player, len(particle_remove_list))
             if particle.timer >= particle.max_timer:
                 particle_remove_list.append(i)
+                if particle.pick_up:
+                    pygame.mixer.find_channel(True).play(particle.sounds["coin"])
+                    print("coin +1")
             i += 1
         particle_remove_list.sort(reverse=True)
         for i in particle_remove_list:

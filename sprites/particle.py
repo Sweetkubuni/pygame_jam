@@ -7,6 +7,8 @@ class Particle():
         self.rect = rect
         self.max_timer = max_timer
 
+        self.pick_up = False
+
         self.ani_timer = 0
         self.ani_frame = 0
 
@@ -27,12 +29,15 @@ class Particle():
             
         self.timer = 0
 
+    def update(self, rect, ass):
+        pass
+
     def draw(self):
-        for particle in self.particles:           
-            particle[1] += particle[3]
-            particle[2] += particle[4]
+        for particle in self.particles:
+            particle[1] += particle[3] * self.tilemap.level.state.game.delta_time
+            particle[2] += particle[4] * self.tilemap.level.state.game.delta_time
             # pseudo gravity
-            particle[4] += 0.05
+            particle[4] += 0.05 * self.tilemap.level.state.game.delta_time
 
             particle[0].rect.x, particle[0].rect.y = int(particle[1]), int(particle[2])
             
@@ -42,9 +47,9 @@ class Particle():
             temp_rect.y -= self.animation[2][1]
 
             self.tilemap.level.state.game.game_canvas.blit(self.animation[0][self.ani_frame][0], temp_rect)
-            # pygame.draw.rect(self.tilemap.level.state.game.game_canvas, (250,0,0), self.tilemap.level.camera.apply(particle[0]), width=2)
+            #pygame.draw.rect(self.tilemap.level.state.game.game_canvas, (250,0,0), self.tilemap.level.camera.apply(particle[0]), width=2)
             
-        self.timer += 1
+        self.timer += self.tilemap.level.state.game.delta_time
 
         if self.ani_timer < self.animation[0][self.ani_frame][1]:
             self.ani_timer += 1
