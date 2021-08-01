@@ -1,7 +1,9 @@
 import pygame, os, csv
 from sprites.tile import Tile
 from sprites.block import Block
+from sprites.enemy import Ground_enemy, Air_enemy, Follower_ground, Follower_air
 from config.config import tile_keys
+from hub import loadImage
 
 from sprites.enemy import *
 
@@ -29,16 +31,15 @@ class Tile_map:
             for tile in row:
                 # -----------------------ENEMIES --------------------------------
                 if tile == 30: # Ground enemy -> Gumba
-                    print("gumba", x*self.tile_size, y*self.tile_size)
-                    enemies.add(Ground_enemy(x * self.tile_size, y * self.tile_size, 30, 30, game))
+                    enemies.add(Ground_enemy(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "ground.png")), game))
                 if tile == 31: # Air enemy -> Flyer
-                    enemies.add(Air_enemy(x * self.tile_size, y * self.tile_size, 30, 30, game))
-                if tile == 33: # Ground enemy -> Follower
-                    enemies.add(Ground_enemy(x * self.tile_size, y * self.tile_size, 30, 30, game))
-                            
+                    enemies.add(Air_enemy(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "fly.png")), game))
+                if tile == 32: # Ground enemy -> Follower
+                    enemies.add(Follower_ground(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "ground_follow.png")), 100, game))
+                if tile == 33:
+                    enemies.add(Follower_air(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "fly_follow.png")), 100, game))
                 for tile_key in tile_keys:
                     if tile == tile_key:
-                        
                         if tile == 0 or tile == 1: # Dirt and grass are destructable
                             # I'm passing the Block object , the tile_id as "tile" so each block has unique properties and interactions
                             tiles_and_blocks.add(Block(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, True, tile, all_animations, all_sounds))

@@ -1,9 +1,10 @@
 import pygame, random
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, start_pos_x, start_pos_y, width, height, game) -> None:
+    def __init__(self, start_pos_x, start_pos_y, image, game) -> None:
         super().__init__()
-        self.rect = pygame.Rect(start_pos_x, start_pos_y, width, height)
+        self.image = image
+        self.rect = self.image.get_rect(x = start_pos_x, y = start_pos_y)
         self.x = float(start_pos_x)
         self.y = float(start_pos_y)
 
@@ -11,8 +12,8 @@ class Enemy(pygame.sprite.Sprite):
 
     
 class Ground_enemy(Enemy):
-    def __init__(self, start_pos_x, start_pos_y, width, height, game) -> None:
-        super().__init__(start_pos_x, start_pos_y, width, height, game)
+    def __init__(self, start_pos_x, start_pos_y, image, game) -> None:
+        super().__init__(start_pos_x, start_pos_y, image, game)
         self.speed_x, self.speed_y = 0.5, 0.5
 
     def update(self):
@@ -39,10 +40,10 @@ class Ground_enemy(Enemy):
         pygame.draw.rect(self.game.game_canvas, (0,60,200), self.game.state_stack[-1].current_level.camera.apply(self), width=1)
 
 class Air_enemy(Enemy):
-    def __init__(self, start_pos_x, start_pos_y, width, height, game) -> None:
-        super().__init__(start_pos_x, start_pos_y, width, height, game)
+    def __init__(self, start_pos_x, start_pos_y, image, game) -> None:
+        super().__init__(start_pos_x, start_pos_y, image, game)
         self.speed = 5
-        self.direction_vector = pygame.math.Vector2(random.randrange(0, 1), random.randrange(0, 1))
+        self.direction_vector = pygame.math.Vector2(0, 1)
         self.direction_vector.normalize_ip()
 
     def update(self, tiles):
@@ -72,9 +73,9 @@ class Air_enemy(Enemy):
     def draw(self):
         pygame.draw.rect(self.game.game_canvas, (0,60,200), self.game.state_stack[-1].current_level.camera.apply(self), width=1)
 
-class Follower_ground(Ground_enemy, game):
-    def __init__(self, start_pos_x, start_pos_y, width, height, sight_distance, game) -> None:
-        super().__init__(start_pos_x, start_pos_y, width, height, game)
+class Follower_ground(Ground_enemy):
+    def __init__(self, start_pos_x, start_pos_y, image, sight_distance, game) -> None:
+        super().__init__(start_pos_x, start_pos_y, image, game)
         self.sight_distance = sight_distance
 
     def update(self, tiles, player):
@@ -93,8 +94,9 @@ class Follower_ground(Ground_enemy, game):
         super().move(tiles, direction_vector.normalize())
 
 class Follower_air(Air_enemy):
-    def __init__(self, start_pos_x, start_pos_y, width, height, game) -> None:
-        super().__init__(start_pos_x, start_pos_y, width, height, game)
+    def __init__(self, start_pos_x, start_pos_y, image, sight_distance, game) -> None:
+        super().__init__(start_pos_x, start_pos_y, image, game)
+        self.sight_distance = sight_distance
 
     def update(self, tiles, player):
         player_position = player_position_x, player_position_y = player.rect.center

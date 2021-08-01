@@ -28,7 +28,7 @@ class Game_world(State):
                 
         self.levels = {
             1: Level(self,
-                os.path.join(self.game.tilemap_directory, "level-1.csv"),
+                os.path.join(self.game.tilemap_directory, "world.csv"),
                 temp_background,
                 0, 0
             )
