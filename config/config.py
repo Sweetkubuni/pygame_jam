@@ -35,9 +35,9 @@ with open(os.path.join("config", "tile_keys.json"), "r") as tile_key_json_file:
 assets = os.path.join("assets", "images", "tiles")
 
 tile_keys = {
-    0: loadImage(os.path.join(assets, "dirt.jpg")),
-    1: loadImage(os.path.join(assets, "grass.jpg")),
-    2: loadImage(os.path.join(assets, "block.png")),
+    0: loadImage(os.path.join(assets, "dirt.png")),
+    1: loadImage(os.path.join(assets, "grass.png")),
+    2: loadImage(os.path.join(assets, "metal.png")),
     3: loadImage(os.path.join(assets, "brick.png")),
     4: loadImage(os.path.join(assets, "mushroom.png"))
 }

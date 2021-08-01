@@ -11,9 +11,10 @@ class Block(Tile):
         self.delete = False
         self.sounds = {"explodeBrick": all_sounds["explodeBrick"]}
         
-    def update(self, player_rect):
-        if self.rect.colliderect(player_rect) and self.rect.bottom > player_rect.top and not(self.delete):
-            self.delete = True
+    def update(self, attack_sprite, previous_delete):
+        if attack_sprite != None and not(previous_delete):
+            if self.rect.colliderect(attack_sprite.rect) and not(self.delete):
+                self.delete = True
             
     def draw(self):
         if not(self.delete):
