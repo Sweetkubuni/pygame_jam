@@ -80,7 +80,7 @@ class Player(pygame.sprite.Sprite):
         if self.inputs["attack"] and not(self.attacking):
             self.attacking = True
             self.attack_timer = 61
-            if self.inputs["down"]:
+            if self.inputs["down"] and not(self.jumping):
                 self.attacking_down = True
                 self.attack_sprite = pygame.sprite.Sprite()
                 if self.flip:
@@ -152,7 +152,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.speed_y += self.gravity /30
 
-        if self.grounded and self.current_ani == self.animations[3]:
+        if self.grounded and self.attacking and (self.current_ani == self.animations[2] or self.current_ani == self.animations[3]):
             if self.speed_x == 0:
                 self.change_animation(self.animations[1])
             else:
