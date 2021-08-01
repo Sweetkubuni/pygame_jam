@@ -35,6 +35,7 @@ class Player(pygame.sprite.Sprite):
                            [all_animations["player jump"], False, (10,8)], # INDEX 2
                            [all_animations["player fall"], False, (10,8)], # INDEX 3
                            [all_animations["player attack"], False, (6,8)], # INDEX 4
+                           [all_animations["player attack down"], False, (10,8)], # INDEX 5
                            ]
         self.ani_timer = 0
         self.ani_frame = 0
@@ -63,8 +64,7 @@ class Player(pygame.sprite.Sprite):
             self.inputs["jump"] = True
         if self.game.actions[pygame.K_z]:
             self.inputs["attack"] = True
-
-            
+  
         # Animation orientation
         if self.inputs["right"]:
             self.flip = False
@@ -83,22 +83,31 @@ class Player(pygame.sprite.Sprite):
             if self.inputs["down"]:
                 self.attacking_down = True
                 self.attack_sprite = pygame.sprite.Sprite()
-                self.attack_sprite.rect = pygame.rect.Rect(self.rect.x+5, self.rect.y+22, 10, 10)
+                if self.flip:
+                    self.attack_sprite.rect = pygame.rect.Rect(self.rect.x+11, self.rect.y+22, 13, 10)
+                else:
+                    self.attack_sprite.rect = pygame.rect.Rect(self.rect.x+6, self.rect.y+22, 13, 10)
             elif self.flip: # atk left
                 self.change_animation(self.animations[4])
                 self.current_ani[2] = (10,8)
                 self.attack_sprite = pygame.sprite.Sprite()
-                self.attack_sprite.rect = pygame.rect.Rect(self.rect.x-13, self.rect.y+5, 10, 10)
+                self.attack_sprite.rect = pygame.rect.Rect(self.rect.x-13, self.rect.y+5, 13, 10)
             else: # atk right
                 self.change_animation(self.animations[4])
                 self.current_ani[2] = (12,8)
                 self.attack_sprite = pygame.sprite.Sprite()
-                self.attack_sprite.rect = pygame.rect.Rect(self.rect.x+13, self.rect.y+5, 10, 10)
+                self.attack_sprite.rect = pygame.rect.Rect(self.rect.x+13, self.rect.y+5, 13, 10)
 
         if self.attacking:
             self.attack_timer -= self.game.delta_time
             if self.attacking_down and self.attack_timer > 0:
-                self.attack_sprite.rect.topleft = (self.rect.x-2, self.rect.y+20)
+                if self.attack_timer > 0:
+                    self.change_animation(self.animations[5])
+                elif self.jumping: self.change_animation(self.animations[3])
+                if self.flip:
+                    self.attack_sprite.rect.topleft = (self.rect.x, self.rect.y+20)
+                else:
+                    self.attack_sprite.rect.topleft = (self.rect.x-4, self.rect.y+20)
             elif self.flip and self.attack_timer > 0:
                 self.attack_sprite.rect.topleft = (self.rect.x - 10, self.rect.y+5)
             elif self.attack_timer > 0:
@@ -143,7 +152,12 @@ class Player(pygame.sprite.Sprite):
         else:
             self.speed_y += self.gravity /30
 
-        
+        if self.grounded and self.current_ani == self.animations[3]:
+            if self.speed_x == 0:
+                self.change_animation(self.animations[1])
+            else:
+                self.change_animation(self.animations[0])
+
 
         # xL: Applies the speed to the position
         self.x += self.speed_x * self.game.delta_time
@@ -212,6 +226,6 @@ class Player(pygame.sprite.Sprite):
                 if self.current_ani[1] == True:
                     self.ani_timer, self.ani_frame = 0, 0
                 else: self.change_animation(self.previous_ani)
-        pygame.draw.rect(self.game.game_canvas, (0,60,200), self.game.state_stack[-1].current_level.camera.apply(self), width=1)
-        if self.attack_sprite != None:
-            pygame.draw.rect(self.game.game_canvas, (215,10,30), self.game.state_stack[-1].current_level.camera.apply(self.attack_sprite), width=1)
+        #pygame.draw.rect(self.game.game_canvas, (0,60,200), self.game.state_stack[-1].current_level.camera.apply(self), width=1)
+        #if self.attack_sprite != None:
+            #pygame.draw.rect(self.game.game_canvas, (215,10,30), self.game.state_stack[-1].current_level.camera.apply(self.attack_sprite), width=1)

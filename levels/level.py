@@ -31,8 +31,9 @@ class Level:
                     pygame.mixer.find_channel(True).play(tile.sounds["explodeBrick"])
                     block_remove_list.append(tile)
                     self.particles.append(Particle(self.tilemap, pygame.Rect(tile.x, tile.y, 10,10), self.state.all_animations["break particle"], False, (0,0), 2, 34, [1.047,2.094], 1.8))
-            for block in block_remove_list:
-                self.tiles_and_blocks.remove(block)
+        block_remove_list.sort(reverse=True)
+        for block in block_remove_list:
+            self.tiles_and_blocks.remove(block)
 
 
         particle_remove_list = []
