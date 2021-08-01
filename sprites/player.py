@@ -12,14 +12,21 @@ class Player(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = x, y
         self.x, self.y = float(x), float(y) # xL: For more presice movement, we use floats instead of rect's int
         self.speed_x, self.speed_y = 0, 0 # xL: more floats
+        
         self.grounded = False
         self.jump_height = 80;
         self.gravity  = 10
         self.jumping = False
         self.jump_delay = -1;
         self.start_height = 0;
+        
+        self.attacking = False
+        self.attacking_down = False
+        self.attack_timer = 0
+        self.attack_sprite = None
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
-        self.inputs = {"right": False, "left": False, "jump": False}
+        self.inputs = {"right": False, "left": False, "down": False, "jump": False, "attack": False}
+        
         
 
     def level_init(self, all_animations, all_sounds, x, y):
@@ -27,6 +34,7 @@ class Player(pygame.sprite.Sprite):
                            [all_animations["player run"], True, (10,8)], # INDEX 1
                            [all_animations["player jump"], False, (10,8)], # INDEX 2
                            [all_animations["player fall"], False, (10,8)], # INDEX 3
+                           [all_animations["player attack"], False, (6,8)], # INDEX 4
                            ]
         self.ani_timer = 0
         self.ani_frame = 0
@@ -41,7 +49,7 @@ class Player(pygame.sprite.Sprite):
         # xL: Player movement controls
         self.speed_x = 0
         
-        self.inputs = {"right": False, "left": False, "jump": False}
+        self.inputs = {"right": False, "left": False, "down": False, "jump": False, "attack": False}
         
         if self.game.actions[pygame.K_RIGHT]:
             self.speed_x += 1
@@ -49,28 +57,69 @@ class Player(pygame.sprite.Sprite):
         if self.game.actions[pygame.K_LEFT]:
             self.speed_x += -1
             self.inputs["left"] = True
-        if self.game.actions[pygame.K_UP] or self.game.actions[pygame.K_SPACE] or self.game.actions[pygame.K_z]:
+        if self.game.actions[pygame.K_DOWN]:
+            self.inputs["down"] = True
+        if self.game.actions[pygame.K_UP] or self.game.actions[pygame.K_SPACE]:
             self.inputs["jump"] = True
+        if self.game.actions[pygame.K_z]:
+            self.inputs["attack"] = True
 
+            
+        # Animation orientation
         if self.inputs["right"]:
             self.flip = False
-            if self.grounded:
+            if self.grounded and not(self.attacking):
                 self.change_animation(self.animations[1])
             
         if self.inputs["left"]:
             self.flip = True
-            if self.grounded:
+            if self.grounded and not(self.attacking):
                 self.change_animation(self.animations[1])
-            
-            
 
-        if self.speed_x == 0 and self.grounded:
+        # Attack
+        if self.inputs["attack"] and not(self.attacking):
+            self.attacking = True
+            self.attack_timer = 61
+            if self.inputs["down"]:
+                self.attacking_down = True
+                self.attack_sprite = pygame.sprite.Sprite()
+                self.attack_sprite.rect = pygame.rect.Rect(self.rect.x+5, self.rect.y+22, 10, 10)
+            elif self.flip: # atk left
+                self.change_animation(self.animations[4])
+                self.current_ani[2] = (10,8)
+                self.attack_sprite = pygame.sprite.Sprite()
+                self.attack_sprite.rect = pygame.rect.Rect(self.rect.x-13, self.rect.y+5, 10, 10)
+            else: # atk right
+                self.change_animation(self.animations[4])
+                self.current_ani[2] = (12,8)
+                self.attack_sprite = pygame.sprite.Sprite()
+                self.attack_sprite.rect = pygame.rect.Rect(self.rect.x+13, self.rect.y+5, 10, 10)
+
+        if self.attacking:
+            self.attack_timer -= self.game.delta_time
+            if self.attacking_down and self.attack_timer > 0:
+                self.attack_sprite.rect.topleft = (self.rect.x-2, self.rect.y+20)
+            elif self.flip and self.attack_timer > 0:
+                self.attack_sprite.rect.topleft = (self.rect.x - 10, self.rect.y+5)
+            elif self.attack_timer > 0:
+                self.attack_sprite.rect.topleft = (self.rect.x + 10, self.rect.y+5)
+
+        if self.attack_timer < 0:
+            self.attack_sprite = None
+            if self.attack_timer < -60:
+                self.attacking = False
+                self.attacking_down = False
+
+        # Return to idle
+        if self.speed_x == 0 and self.grounded and not(self.attacking):
             self.change_animation(self.animations[0])
 
+        # Jump code
         if self.inputs["jump"] and self.grounded and self.jump_delay < 0:
             self.jumping = True
             pygame.mixer.find_channel(True).play(self.sounds["jumpy"])
-            self.change_animation(self.animations[2])
+            if not(self.attacking):
+                self.change_animation(self.animations[2])
             self.grounded = False
             self.jump_delay =  60
             self.start_height = self.y
@@ -81,12 +130,20 @@ class Player(pygame.sprite.Sprite):
             self.speed_y = -100/30
             if not(self.inputs["jump"]) and self.jump_delay < 55:
                 self.jumping = False
-                self.change_animation(self.animations[3])
+                if not(self.attacking):
+                    self.change_animation(self.animations[3])
+                self.grounded
+                self.jump_delay =0
             if (self.start_height - self.y) >= self.jump_height:
                 self.jumping = False
-                self.change_animation(self.animations[3])
+                if not(self.attacking):
+                    self.change_animation(self.animations[3])
+                self.grounded
+                self.jump_delay = 0
         else:
             self.speed_y += self.gravity /30
+
+        
 
         # xL: Applies the speed to the position
         self.x += self.speed_x * self.game.delta_time
@@ -126,7 +183,6 @@ class Player(pygame.sprite.Sprite):
                 self.rect.top = tile.rect.bottom
                 self.speed_y = 0
                 self.collision_directions["top"] = True
-                tile.delete = True
             self.y = self.rect.y
 
     def change_animation(self, new_ani):
@@ -155,5 +211,7 @@ class Player(pygame.sprite.Sprite):
             if self.ani_frame >= len(self.current_ani[0]):
                 if self.current_ani[1] == True:
                     self.ani_timer, self.ani_frame = 0, 0
-                else: self.change_animation(self.previous_ani[3])
-        #pygame.draw.rect(self.game.game_canvas, (250,0,0), self.game.state_stack[-1].current_level.camera.apply(self), width=2)
+                else: self.change_animation(self.previous_ani)
+        pygame.draw.rect(self.game.game_canvas, (0,60,200), self.game.state_stack[-1].current_level.camera.apply(self), width=1)
+        if self.attack_sprite != None:
+            pygame.draw.rect(self.game.game_canvas, (215,10,30), self.game.state_stack[-1].current_level.camera.apply(self.attack_sprite), width=1)

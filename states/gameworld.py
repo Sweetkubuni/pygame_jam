@@ -11,7 +11,7 @@ class Game_world(State):
         """Initialize the game world class."""
         super().__init__(game)
         temp_background = pygame.Surface(self.game.GAME_SIZE)
-        temp_background.fill(colours["blue"])
+        temp_background.fill(colours["dark gray"])
 
         self.all_animations = {}
         for animations in os.listdir(self.game.animation_directory):

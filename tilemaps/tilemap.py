@@ -27,7 +27,7 @@ class Tile_map:
             for tile in row:
                 for tile_key in tile_keys:
                     if tile == tile_key:
-                        if tile == 2 or tile == 3:
+                        if tile == 0 or tile == 1: # Dirt and grass are destructable
                             # I'm passing the Block object , the tile_id as "tile" so each block has unique properties and interactions
                             tiles_and_blocks.add(Block(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, True, tile, all_animations, all_sounds))
                         else:

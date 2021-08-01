@@ -25,8 +25,9 @@ class Level:
         block_remove_list = []
         for tile in self.tiles_and_blocks.sprites():
             if tile.destructable: # The tile is a block
-                tile.update(self.state.game.player.rect)
+                tile.update(self.state.game.player.attack_sprite, len(block_remove_list))
                 if tile.delete:
+                    self.state.game.player.attack_timer = -30
                     pygame.mixer.find_channel(True).play(tile.sounds["explodeBrick"])
                     block_remove_list.append(tile)
                     self.particles.append(Particle(self.tilemap, pygame.Rect(tile.x, tile.y, 10,10), self.state.all_animations["break particle"], False, (0,0), 2, 34, [1.047,2.094], 1.8))
