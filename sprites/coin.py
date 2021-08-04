@@ -22,7 +22,7 @@ class Coin(pygame.sprite.Sprite):
 
         self.sounds = {"coin": all_sounds["coin"]}
         
-    def update(self, player_sprite, previous_delete):
+    def update(self, tiles, player_sprite, previous_delete):
 
         self.timer += self.game.delta_time
 
@@ -37,7 +37,7 @@ class Coin(pygame.sprite.Sprite):
         self.y += self.speed_y * self.game.delta_time       
         
         self.rect.x = int(self.x)
-        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles_and_blocks, False)
+        hit_list = pygame.sprite.spritecollide(self, tiles, False)
 
         for tile in hit_list:
             if self.speed_x > 0:
@@ -49,7 +49,7 @@ class Coin(pygame.sprite.Sprite):
             self.x = self.rect.x
 
         self.rect.y = int(self.y)
-        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles_and_blocks, False)
+        hit_list = pygame.sprite.spritecollide(self, tiles, False)
 
         for tile in hit_list:
             if self.speed_y > 0:
@@ -60,15 +60,11 @@ class Coin(pygame.sprite.Sprite):
                 self.speed_x, self.speed_y = 0, 0
             self.y = self.rect.y
             
-    def draw(self):
-        temp_rect = self.game.state_stack[-1].current_level.camera.apply(self)
-        temp_rect.x -= self.current_ani[2][0]
-        temp_rect.y -= self.current_ani[2][1]
-            
+    def draw(self, layer):
         if self.current_ani[0][0][1] == 0: # no animation
-            self.game.game_canvas.blit(pygame.transform.flip(self.current_ani[0][0][0], self.flip, False), temp_rect)
+            layer.blit(self.current_ani[0][0][0], (self.rect.x-self.current_ani[2][0], self.rect.y-self.current_ani[2][1]))
         else:
-            self.game.game_canvas.blit(pygame.transform.flip(self.current_ani[0][self.ani_frame][0], self.flip, False), temp_rect)
+            layer.blit(pygame.transform.flip(self.current_ani[0][self.ani_frame][0], self.flip, False), (self.rect.x-self.current_ani[2][0],self.rect.y-self.current_ani[2][1]))
             if self.ani_timer < self.current_ani[0][self.ani_frame][1]:
                 self.ani_timer += self.game.delta_time
             else:

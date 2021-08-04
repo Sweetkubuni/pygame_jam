@@ -44,9 +44,10 @@ class Player(pygame.sprite.Sprite):
 
         self.sounds = {"jumpy": all_sounds["jumpy"]}
 
+        self.rect.x, self.rect.y = x, y
         self.x, self.y = x, y
         
-    def update(self):
+    def update(self, tiles):
         # xL: Player movement controls
         self.speed_x = 0
         
@@ -167,7 +168,7 @@ class Player(pygame.sprite.Sprite):
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
         
         self.rect.x = int(self.x)
-        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles_and_blocks, False)
+        hit_list = pygame.sprite.spritecollide(self, tiles, False)
 
         for tile in hit_list:
             if self.speed_x > 0:
@@ -181,7 +182,7 @@ class Player(pygame.sprite.Sprite):
             self.x = self.rect.x
 
         self.rect.y = int(self.y)
-        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles_and_blocks, False)
+        hit_list = pygame.sprite.spritecollide(self, tiles, False)
 
         collide_tolerance = 5
         for tile in hit_list:
@@ -206,17 +207,12 @@ class Player(pygame.sprite.Sprite):
             self.ani_frame = 0
             self.current_ani = new_ani
 
-    def draw(self):
+    def draw(self, layer):
 
-        # applying offset to the animation
-        temp_rect = self.game.state_stack[-1].current_level.camera.apply(self)
-        temp_rect.x -= self.current_ani[2][0]
-        temp_rect.y -= self.current_ani[2][1]
-            
         if self.current_ani[0][0][1] == 0: # no animation
-            self.game.game_canvas.blit(pygame.transform.flip(self.current_ani[0][0][0], self.flip, False), temp_rect)
+            layer.blit(pygame.transform.flip(self.current_ani[0][0][0], self.flip, False), (self.rect.x-self.current_ani[2][0],self.rect.y-self.current_ani[2][1]))
         else:
-            self.game.game_canvas.blit(pygame.transform.flip(self.current_ani[0][self.ani_frame][0], self.flip, False), temp_rect)
+            layer.blit(pygame.transform.flip(self.current_ani[0][self.ani_frame][0], self.flip, False), (self.rect.x-self.current_ani[2][0],self.rect.y-self.current_ani[2][1]))
             if self.ani_timer < self.current_ani[0][self.ani_frame][1]:
                 self.ani_timer += self.game.delta_time
             else:

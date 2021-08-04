@@ -29,10 +29,10 @@ class Particle():
             
         self.timer = 0
 
-    def update(self, rect, ass):
+    def update(self, tiles, rect, ass):
         pass
 
-    def draw(self):
+    def draw(self, layer):
         for particle in self.particles:
             particle[1] += particle[3] * self.tilemap.level.state.game.delta_time
             particle[2] += particle[4] * self.tilemap.level.state.game.delta_time
@@ -41,18 +41,13 @@ class Particle():
 
             particle[0].rect.x, particle[0].rect.y = int(particle[1]), int(particle[2])
             
-            # applying blit offset to the animation
-            temp_rect = self.tilemap.level.camera.apply(particle[0])
-            temp_rect.x -= self.animation[2][0]
-            temp_rect.y -= self.animation[2][1]
-
-            self.tilemap.level.state.game.game_canvas.blit(self.animation[0][self.ani_frame][0], temp_rect)
+            layer.blit(self.animation[0][self.ani_frame][0], (particle[0].rect.x-self.animation[2][0], particle[0].rect.y-self.animation[2][1]))
             #pygame.draw.rect(self.tilemap.level.state.game.game_canvas, (250,0,0), self.tilemap.level.camera.apply(particle[0]), width=2)
             
         self.timer += self.tilemap.level.state.game.delta_time
 
         if self.ani_timer < self.animation[0][self.ani_frame][1]:
-            self.ani_timer += 1
+            self.ani_timer += self.tilemap.level.state.game.delta_time
         else:
             self.ani_timer = 0
             self.ani_frame += 1

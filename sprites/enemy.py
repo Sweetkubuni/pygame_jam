@@ -10,18 +10,22 @@ class Enemy(pygame.sprite.Sprite):
 
         self.game = game
 
+    def draw(self, layer):
+        
+        pygame.draw.rect(layer, (0,60,200), self.rect, width=1)
+
     
 class Ground_enemy(Enemy):
     def __init__(self, start_pos_x, start_pos_y, image, game) -> None:
         super().__init__(start_pos_x, start_pos_y, image, game)
         self.speed_x, self.speed_y = 0.5, 0.5
 
-    def update(self):
+    def update(self, tiles):
         self.x += self.speed_x
         self.y += self.speed_y
 
         self.rect.x = int(self.x)
-        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles_and_blocks, False)
+        hit_list = pygame.sprite.spritecollide(self, tiles, False)
         for hit in hit_list:
             if self.speed_x > 0:
                 self.rect.right = hit.rect.left
@@ -31,13 +35,10 @@ class Ground_enemy(Enemy):
             self.x = self.rect.x
         
         self.rect.y = int(self.y)
-        hit_list = pygame.sprite.spritecollide(self, self.game.state_stack[-1].current_level.tiles_and_blocks, False)
+        hit_list = pygame.sprite.spritecollide(self, tiles, False)
         for hit in hit_list:
             self.rect.bottom = hit.rect.top
             self.y = self.rect.y
-
-    def draw(self):
-        pygame.draw.rect(self.game.game_canvas, (0,60,200), self.game.state_stack[-1].current_level.camera.apply(self), width=1)
 
 class Air_enemy(Enemy):
     def __init__(self, start_pos_x, start_pos_y, image, game) -> None:
@@ -69,9 +70,6 @@ class Air_enemy(Enemy):
                 self.rect.top = hit.rect.bottom
             self.direction_vector.reflect_ip()
             self.y = self.rect.y
-
-    def draw(self):
-        pygame.draw.rect(self.game.game_canvas, (0,60,200), self.game.state_stack[-1].current_level.camera.apply(self), width=1)
 
 class Follower_ground(Ground_enemy):
     def __init__(self, start_pos_x, start_pos_y, image, sight_distance, game) -> None:

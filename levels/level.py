@@ -5,30 +5,36 @@ from tilemaps.tilemap import Tile_map
 from camera import Camera
 from sprites.particle import Particle
 from sprites.coin import Coin
+from config.config import colours
+
 
 class Level:
     def __init__(self, state, tilemap, background, start_x, start_y) -> None:
         self.state = state
         self.tilemap = Tile_map(self, tilemap)
-        if type(background) == pygame.Surface:
-            self.background = background
-        else:
-            self.background = loadImage(background)
+        self.background = background
         self.tiles_and_blocks, self.enemies = self.tilemap.load_tiles_and_blocks(self.state.all_animations, self.state.all_sounds, self.state.game)
-        self.start_pos = self.start_pos_x, self.start_y = start_x, start_y
-        self.camera = Camera(self, self.state.game.player, self.state.game.GAME_WIDTH, self.state.game.GAME_HEIGHT)
+        self.start_x, self.start_y = start_x, start_y
+
+        self.level_surface = pygame.Surface((16*50, 16*146)) # This has to be the tilemap*tilesize dimentions
+        
         self.particles = []
-        self.state.game.player.level_init(self.state.all_animations, self.state.all_sounds, 32, 141)
+        self.state.game.player.level_init(self.state.all_animations, self.state.all_sounds, self.start_x, self.start_y)
+      
+        self.camera = Camera(self.state.game.player, self.state.game.GAME_WIDTH, self.state.game.GAME_HEIGHT, self.level_surface)
+        self.camera_surface = pygame.Surface((self.state.game.GAME_WIDTH, self.state.game.GAME_HEIGHT))
+        
+        
 
     def update(self):
-        self.state.game.player.update()
-        self.camera.update()
+        self.state.game.player.update(self.tiles_and_blocks)
+        self.camera.update(self.state.game.player)
 
         enemy_remove_list = []
         i = 0
         for enemy in self.enemies:
             if(abs(self.state.game.player.rect.y - enemy.rect.y) < 500):
-                enemy.update()
+                enemy.update(self.tiles_and_blocks)
         
         block_remove_list = []
         for tile in self.tiles_and_blocks.sprites():
@@ -50,7 +56,7 @@ class Level:
         particle_remove_list = []
         i = 0
         for particle in self.particles:
-            particle.update(self.state.game.player, len(particle_remove_list))
+            particle.update(self.tiles_and_blocks, self.state.game.player, len(particle_remove_list))
             if particle.timer >= particle.max_timer:
                 particle_remove_list.append(i)
                 if particle.pick_up:
@@ -63,13 +69,22 @@ class Level:
 
 
     def render(self):
-        self.state.game.game_canvas.blit(self.background, (0, 0))
-        self.state.game.player.draw()
+        self.level_surface.fill(colours["dark brown"], rect=self.camera.rect)
+        self.level_surface.blit(self.background, (0, 0))
+        self.state.game.player.draw(self.level_surface)
+                
         for tile in self.tiles_and_blocks.sprites():
-            if(abs(self.state.game.player.rect.y - tile.rect.y) < 500):
-                tile.draw()
+            if (abs(self.state.game.player.rect.y - tile.rect.y) < 300) and (abs(self.state.game.player.rect.x - tile.rect.x) < 300):
+                tile.draw(self.level_surface)
         for enemy in self.enemies:
-            if(abs(self.state.game.player.rect.y - enemy.rect.y) < 500):
-                enemy.draw()
+            if (abs(self.state.game.player.rect.y - enemy.rect.y) < 300) and (abs(self.state.game.player.rect.x - enemy.rect.x) < 300):
+                enemy.draw(self.level_surface)
         for particle in self.particles:
-           particle.draw()
+           particle.draw(self.level_surface)
+
+        self.camera_surface.blit(self.level_surface, (0,0), area=(self.camera.rect.x, self.camera.rect.y, self.camera.width, self.camera.height))
+
+        # UI
+        
+        
+        self.state.game.game_canvas.blit(self.camera_surface, (0,0))

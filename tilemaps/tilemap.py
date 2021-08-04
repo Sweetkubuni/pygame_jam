@@ -5,8 +5,6 @@ from sprites.enemy import Ground_enemy, Air_enemy, Follower_ground, Follower_air
 from config.config import tile_keys
 from hub import loadImage
 
-from sprites.enemy import *
-
 class Tile_map:
     def __init__(self, level, csv_filepath):
         self.csv_filepath = csv_filepath

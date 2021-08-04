@@ -16,7 +16,7 @@ class Block(Tile):
             if self.rect.colliderect(attack_sprite.rect) and not(self.delete):
                 self.delete = True
             
-    def draw(self):
+    def draw(self, layer):
         if not(self.delete):
-            self.tilemap.level.state.game.game_canvas.blit(self.image, self.tilemap.level.camera.apply(self))
+            layer.blit(self.image, self.rect)
         

@@ -10,5 +10,5 @@ class Tile(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = x, y
         self.destructable = destructable
 
-    def draw(self):
-        self.tilemap.level.state.game.game_canvas.blit(self.image, self.tilemap.level.camera.apply(self))
+    def draw(self, layer):
+        layer.blit(self.image, self.rect)

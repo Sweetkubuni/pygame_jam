@@ -10,8 +10,6 @@ class Game_world(State):
     def __init__(self, game):
         """Initialize the game world class."""
         super().__init__(game)
-        temp_background = pygame.Surface(self.game.GAME_SIZE)
-        temp_background.fill(colours["dark gray"])
 
         self.all_animations = {}
         for animations in os.listdir(self.game.animation_directory):
@@ -25,12 +23,14 @@ class Game_world(State):
         self.all_sounds = {}
         for sound in os.listdir(self.game.sound_directory):
             self.all_sounds[sound.split(".")[0]] = pygame.mixer.Sound(os.path.join(self.game.sound_directory, sound))
+
+        sky_background_img = pygame.image.load(os.path.join(self.game.image_directory, "sky.png")).convert()
                 
         self.levels = {
             1: Level(self,
                 os.path.join(self.game.tilemap_directory, "world.csv"),
-                temp_background,
-                0, 0
+                sky_background_img,
+                100, 188
             )
         }
         self.change_level(self.levels[1])
