@@ -222,6 +222,6 @@ class Player(pygame.sprite.Sprite):
                 if self.current_ani[1] == True:
                     self.ani_timer, self.ani_frame = 0, 0
                 else: self.change_animation(self.previous_ani)
-        #pygame.draw.rect(self.game.game_canvas, (0,60,200), self.game.state_stack[-1].current_level.camera.apply(self), width=1)
-        #if self.attack_sprite != None:
-            #pygame.draw.rect(self.game.game_canvas, (215,10,30), self.game.state_stack[-1].current_level.camera.apply(self.attack_sprite), width=1)
+        pygame.draw.rect(layer, (0,60,200), self.rect, width=1)
+        if self.attack_sprite != None:
+            pygame.draw.rect(layer, (215,10,30), self.attack_sprite.rect, width=1)
