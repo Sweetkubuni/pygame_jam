@@ -6,6 +6,7 @@ from camera import Camera
 from sprites.particle import Particle
 from sprites.coin import Coin
 from config.config import colours
+from sprites.text import Text
 
 
 class Level:
@@ -23,6 +24,8 @@ class Level:
       
         self.camera = Camera(self.state.game.player, self.state.game.GAME_WIDTH, self.state.game.GAME_HEIGHT, self.level_surface)
         self.camera_surface = pygame.Surface((self.state.game.GAME_WIDTH, self.state.game.GAME_HEIGHT))
+
+        self.current_fps = Text(self.camera_surface, os.path.join(self.state.game.font_directory,"alphbeta.ttf"), 22, str(self.state.game.clock.get_fps()).split(".")[0], colours["black"], False, 20, 20, False)
         
         
 
@@ -30,11 +33,12 @@ class Level:
         self.state.game.player.update(self.tiles_and_blocks)
         self.camera.update(self.state.game.player)
 
-        enemy_remove_list = []
-        i = 0
+        #enemy_remove_list = []
+        #i = 0
         for enemy in self.enemies:
             if(abs(self.state.game.player.rect.y - enemy.rect.y) < 500):
-                enemy.update(self.tiles_and_blocks)
+                enemy.move(self.tiles_and_blocks)
+                enemy.update(self.state.game.player)
         
         block_remove_list = []
         for tile in self.tiles_and_blocks.sprites():
@@ -85,6 +89,6 @@ class Level:
         self.camera_surface.blit(self.level_surface, (0,0), area=(self.camera.rect.x, self.camera.rect.y, self.camera.width, self.camera.height))
 
         # UI
-        
+        self.current_fps.update(content=str(self.state.game.clock.get_fps()).split(".")[0])
         
         self.state.game.game_canvas.blit(self.camera_surface, (0,0))

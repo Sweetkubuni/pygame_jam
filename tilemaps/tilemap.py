@@ -28,14 +28,14 @@ class Tile_map:
             x = 0
             for tile in row:
                 # -----------------------ENEMIES --------------------------------
-                if tile == 30: # Ground enemy -> Gumba
-                    enemies.add(Ground_enemy(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "ground.png")), game))
-                if tile == 31: # Air enemy -> Flyer
-                    enemies.add(Air_enemy(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "fly.png")), game))
+                if tile == 30: # Ground enemy (Gumba)
+                    enemies.add(Ground_enemy(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "ground.png"))))
+                if tile == 31: # Air enemy (Flyer)
+                    enemies.add(Air_enemy(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "fly.png"))))
                 if tile == 32: # Ground enemy -> Follower
-                    enemies.add(Follower_ground(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "ground_follow.png")), 100, game))
-                if tile == 33:
-                    enemies.add(Follower_air(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "fly_follow.png")), 100, game))
+                    enemies.add(Follower_ground(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "ground_follow.png")), 100))
+                if tile == 33: # Air enemy -> Follower
+                    enemies.add(Follower_air(x * self.tile_size, y * self.tile_size, loadImage(os.path.join(game.image_directory, "fly_follow.png")), 100))
                 for tile_key in tile_keys:
                     if tile == tile_key:
                         if tile == 0 or tile == 1: # Dirt and grass are destructable
