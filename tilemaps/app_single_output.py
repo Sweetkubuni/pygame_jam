@@ -95,8 +95,6 @@ def app():
             enemies.append(config[f'enemy_{i}'])
         sorted(enemies, key=lambda enemy: int(enemy['difficulty']))
 
-        print(enemies)
-
         room = config['room']
         minimum_space_w = int(room['minimum_space_w'])
         minimum_space_h = int(room['minimum_space_h'])

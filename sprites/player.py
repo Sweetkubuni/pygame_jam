@@ -33,7 +33,7 @@ class Player(pygame.sprite.Sprite):
         self.coins = 0
         self.kills = 0
         
-    def level_init(self, all_animations, all_sounds, x, y):
+    def level_init(self, all_animations, all_sounds, level_width):
         self.animations = [[all_animations["player idle"], True, (10,8)], # INDEX 0
                            [all_animations["player run"], True, (10,8)], # INDEX 1
                            [all_animations["player jump"], False, (10,8)], # INDEX 2
@@ -48,8 +48,7 @@ class Player(pygame.sprite.Sprite):
 
         self.sounds = {"jumpy": all_sounds["jumpy"]}
 
-        self.rect.x, self.rect.y = x, y
-        self.x, self.y = x, y
+        self.level_width = level_width
 
     def check_dead(self, enemies):
         for enemy in enemies:
@@ -186,14 +185,22 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = int(self.x)
         hit_list = pygame.sprite.spritecollide(self, tiles, False)
 
+        # Screen boundaries
+        if self.rect.x <= 0 and self.speed_x < 0:
+            self.rect.left = 0
+            self.collision_directions["left"] = True
+            self.x = self.rect.x
+        if self.rect.right >= self.level_width and self.speed_x > 0:
+            self.rect.right = self.level_width
+            self.collision_directions["right"] = True
+            self.x = self.rect.x
+
         for tile in hit_list:
             if self.speed_x > 0:
                 self.rect.right = tile.rect.left
-                self.speed_x = 0
                 self.collision_directions["right"] = True
             elif self.speed_x < 0:
                 self.rect.left = tile.rect.right
-                self.speed_x = 0
                 self.collision_directions["left"] = True
             self.x = self.rect.x
 
@@ -208,13 +215,16 @@ class Player(pygame.sprite.Sprite):
                 self.grounded = True
             if self.speed_y > 0:
                 self.rect.bottom = tile.rect.top
-                self.speed_y = 0
                 self.collision_directions["bottom"] = True
             elif self.speed_y < 0 and not(self.dead):
                 self.rect.top = tile.rect.bottom
-                self.speed_y = 0
                 self.collision_directions["top"] = True
             self.y = self.rect.y
+
+        if self.collision_directions["left"] or self.collision_directions["right"]:
+            self.speed_x = 0
+        if self.collision_directions["top"] or self.collision_directions["bottom"]:
+            self.speed_y = 0
 
     def change_animation(self, new_ani):
         if self.current_ani != new_ani:

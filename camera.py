@@ -10,8 +10,9 @@ class Camera:
         self.rect = pygame.Rect(self.player_rect.centerx - width//2, self.player_rect.centery - height//2, width, height)
 
         if self.rect.left < 0: self.rect.left = 0
-        if self.rect.right > self.level_width: self.rect.right = self.level_width
-            
+        if self.rect.right > self.level_width:
+            self.rect.right = self.level_width
+
         self.x, self.y = int(self.rect.x), int(self.rect.y)
         
         self.speed_x, self.speed_y = 0, 0

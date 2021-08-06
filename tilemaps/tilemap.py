@@ -11,6 +11,7 @@ class Tile_map:
         self.level = level
         self.tile_size = 16
         self.start_x, self.start_y = 0, 0
+        self.width, self.height = 0, 0
 
     def read_csv(self):
         tilemap = []
@@ -20,9 +21,11 @@ class Tile_map:
         return tilemap
     
     def load_tiles_and_blocks(self, all_animations, all_sounds, game):
+        tile_map_template = self.read_csv()
+
         tiles_and_blocks = pygame.sprite.Group()
         enemies = pygame.sprite.Group()
-        tile_map_template = self.read_csv()
+        areas = []
         x, y = 0, 0
         for row in tile_map_template:
             x = 0
@@ -44,6 +47,12 @@ class Tile_map:
                         else:
                             tiles_and_blocks.add(Tile(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, False))
                 x += 1
+            if y >= 19 and y % 19 == 0: # Create new area
+                print(y)
+                areas.append([tiles_and_blocks.copy(), enemies.copy()])
+                tiles_and_blocks.empty()
+                enemies.empty()
             y += 1
-        self.width, self.height = x * self.tile_size, y * self.tile_size
-        return tiles_and_blocks, enemies
+
+        print(len(areas[1][0].sprites()), len(areas[1][1].sprites()))
+        return areas, x * self.tile_size, y * self.tile_size

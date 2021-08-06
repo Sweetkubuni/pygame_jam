@@ -21,7 +21,7 @@ class Game:
         self.actions = pygame.key.get_pressed()
         self.delta_time, self.previous_time = 0, 0
         self.state_stack = []
-        self.player = Player(self, 0, 0)
+        self.player = Player(self, 100, 188)
 
         pygame.mixer.init()
         pygame.mixer.set_num_channels(5) # a maximum of 5 sounds can be playing at the same time
