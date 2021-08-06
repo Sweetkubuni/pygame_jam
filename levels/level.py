@@ -7,6 +7,7 @@ from sprites.particle import Particle
 from sprites.coin import Coin
 from config.config import colours
 from sprites.text import Text
+from states.gameover import Game_over
 
 
 class Level:
@@ -33,7 +34,8 @@ class Level:
 
         if self.state.game.player.dead and self.state.game.player.dead_timer < 0:
             print("you died")
-        
+            game_over = Game_over(self.state.game, self.state.game.player.coins, self.state.game.player.kills, self.state.game.player.y)
+            game_over.enter_state()
         self.camera.update(self.state.game.player)
 
         enemy_remove_list = []
@@ -44,6 +46,7 @@ class Level:
                 enemy.check_dead(self.state.game.player.attack_sprite)
             if enemy.dead:
                 enemy_remove_list.append(enemy)
+                self.state.game.player.kills += 1
                 self.particles.append(Coin(pygame.Rect(enemy.rect.centerx-6, enemy.rect.y-6, 13, 15), self.state.all_animations["coin"], 450, 1.57, 1.5, self.state.all_sounds, self.state.game))
                 self.particles.append(Coin(pygame.Rect(enemy.rect.centerx-6, enemy.rect.y-6, 13, 15), self.state.all_animations["coin"], 450, 1.37, 1.3, self.state.all_sounds, self.state.game))
                 self.particles.append(Coin(pygame.Rect(enemy.rect.centerx-6, enemy.rect.y-6, 13, 15), self.state.all_animations["coin"], 450, 1.77, 1, self.state.all_sounds, self.state.game))
@@ -76,7 +79,8 @@ class Level:
                 particle_remove_list.append(i)
                 if particle.pick_up:
                     pygame.mixer.find_channel(True).play(particle.sounds["coin"])
-                    print("coin +1")
+                    #print("coin +1")
+                    self.state.game.player.coins += 1
             i += 1
         particle_remove_list.sort(reverse=True)
         for i in particle_remove_list:

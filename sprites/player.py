@@ -29,6 +29,9 @@ class Player(pygame.sprite.Sprite):
 
         self.dead = False
         self.dead_timer = 0
+
+        self.coins = 0
+        self.kills = 0
         
     def level_init(self, all_animations, all_sounds, x, y):
         self.animations = [[all_animations["player idle"], True, (10,8)], # INDEX 0
@@ -166,9 +169,9 @@ class Player(pygame.sprite.Sprite):
                 self.change_animation(self.animations[0])
 
         if self.dead:
-            if self.dead_timer == 0: self.dead_timer = 600
+            if self.dead_timer == 0: self.dead_timer = 400
             self.dead_timer -= self.game.delta_time
-            if self.dead_timer > 580:
+            if self.dead_timer > 380:
                 self.speed_y = -2
             else: self.speed_y += 0.05
 
