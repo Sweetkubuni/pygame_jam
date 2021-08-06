@@ -9,7 +9,7 @@ class Text(pygame.sprite.Sprite):
         self.content = content
         self.update(content = content, colour = colour, is_centered = is_centered, x = x, y = y)
 
-        print("Text object created in", self.x, self.y)
+        #print("Text object created in", self.x, self.y)
     
     def update(self, blit_layer = None, content = None, colour = None, is_centered = None, x = None, y = None):
         if blit_layer != None: self.blit_layer = blit_layer

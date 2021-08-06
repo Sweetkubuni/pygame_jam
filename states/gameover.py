@@ -36,6 +36,7 @@ class Game_over(State):
         self.coins_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Coins - "  + str(self.player_coins), colours["white"], False, self.game.GAME_WIDTH *.5, 140, True)
         self.kills_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Enemies - " + str(self.player_kills), colours["white"], False, self.game.GAME_WIDTH *.5, 165, True)
         self.height_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Depth - " + str(int(self.player_height)), colours["white"], False, self.game.GAME_WIDTH *.5, 190, True)
+        self.score_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "YOUR SCORE - " + str(20*int(self.player_coins) + 40*int(self.player_kills) + 10*int(self.player_height)), colours["white"], False, self.game.GAME_WIDTH *.5, 240, True)
     def update(self):
         """Update the menu state."""
         self.game.check_inputs()
@@ -64,5 +65,5 @@ class Game_over(State):
             self.height_txt.update(self.game.game_canvas, content = "Depth - " + str(int(self.player_height)))
         if self.score_timer == 280:
             pygame.mixer.find_channel(True).play(self.all_sounds["coin"])
-        
-        
+
+        self.score_txt.update(self.game.game_canvas, "YOUR SCORE - " + str(20*int(self.player_coins) + 40*int(self.player_kills) + 10*int(self.player_height)))

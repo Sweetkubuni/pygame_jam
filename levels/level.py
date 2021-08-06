@@ -33,7 +33,7 @@ class Level:
         self.state.game.player.check_dead(self.enemies.sprites())
 
         if self.state.game.player.dead and self.state.game.player.dead_timer < 0:
-            print("you died")
+            #print("you died")
             game_over = Game_over(self.state.game, self.state.game.player.coins, self.state.game.player.kills, self.state.game.player.y)
             game_over.enter_state()
         self.camera.update(self.state.game.player)
