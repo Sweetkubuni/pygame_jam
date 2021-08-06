@@ -33,9 +33,9 @@ class Tile_map:
                 if tile == 31: # Air enemy (Flyer)
                     enemies.add(Air_enemy(pygame.Rect(x * self.tile_size, y * self.tile_size, 9, 8), loadImage(os.path.join(game.image_directory, "fly.png")), (4, 7)))
                 if tile == 32: # Ground enemy -> Follower
-                    enemies.add(Follower_ground(pygame.Rect(x * self.tile_size, y * self.tile_size, 11, 12), loadImage(os.path.join(game.image_directory, "ground_follow.png")), (2, 4), 10))
+                    enemies.add(Follower_ground(pygame.Rect(x * self.tile_size, y * self.tile_size, 11, 12), loadImage(os.path.join(game.image_directory, "ground_follow.png")), (2, 4), 90))
                 if tile == 33: # Air enemy -> Follower
-                    enemies.add(Follower_air(pygame.Rect(x * self.tile_size, y * self.tile_size, 9, 8), loadImage(os.path.join(game.image_directory, "fly_follow.png")), (4, 7), 10))
+                    enemies.add(Follower_air(pygame.Rect(x * self.tile_size, y * self.tile_size, 9, 8), loadImage(os.path.join(game.image_directory, "fly_follow.png")), (4, 7), 90))
                 for tile_key in tile_keys:
                     if tile == tile_key:
                         if tile == 0 or tile == 1: # Dirt and grass are destructable

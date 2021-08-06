@@ -26,9 +26,9 @@ class Player(pygame.sprite.Sprite):
         self.attack_sprite = None
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
         self.inputs = {"right": False, "left": False, "down": False, "jump": False, "attack": False}
-        
-        
 
+        self.dead = False
+        
     def level_init(self, all_animations, all_sounds, x, y):
         self.animations = [[all_animations["player idle"], True, (10,8)], # INDEX 0
                            [all_animations["player run"], True, (10,8)], # INDEX 1
@@ -46,25 +46,30 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.x, self.rect.y = x, y
         self.x, self.y = x, y
+
+    def check_dead(self, enemies):
+        for enemy in enemies:
+            if self.rect.colliderect(enemy.rect):
+                self.dead = True
         
     def update(self, tiles):
         # xL: Player movement controls
         self.speed_x = 0
         
         self.inputs = {"right": False, "left": False, "down": False, "jump": False, "attack": False}
-        
-        if self.game.actions[pygame.K_RIGHT]:
-            self.speed_x += 1
-            self.inputs["right"] = True
-        if self.game.actions[pygame.K_LEFT]:
-            self.speed_x += -1
-            self.inputs["left"] = True
-        if self.game.actions[pygame.K_DOWN]:
-            self.inputs["down"] = True
-        if self.game.actions[pygame.K_UP] or self.game.actions[pygame.K_SPACE]:
-            self.inputs["jump"] = True
-        if self.game.actions[pygame.K_z]:
-            self.inputs["attack"] = True
+        if not(self.dead):
+            if self.game.actions[pygame.K_RIGHT]:
+                self.speed_x += 1
+                self.inputs["right"] = True
+            if self.game.actions[pygame.K_LEFT]:
+                self.speed_x += -1
+                self.inputs["left"] = True
+            if self.game.actions[pygame.K_DOWN]:
+                self.inputs["down"] = True
+            if self.game.actions[pygame.K_UP] or self.game.actions[pygame.K_SPACE]:
+                self.inputs["jump"] = True
+            if self.game.actions[pygame.K_z]:
+                self.inputs["attack"] = True
   
         # Animation orientation
         if self.inputs["right"]:
@@ -158,6 +163,9 @@ class Player(pygame.sprite.Sprite):
                 self.change_animation(self.animations[1])
             else:
                 self.change_animation(self.animations[0])
+
+        if self.dead:
+            self.speed_y = -14
 
 
         # xL: Applies the speed to the position

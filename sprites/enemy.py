@@ -9,6 +9,8 @@ class Enemy(pygame.sprite.Sprite):
         self.y = float(self.rect.y)
         self.offset = offset
 
+        self.dead = False
+
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
 
     def move(self, tiles):
@@ -43,7 +45,11 @@ class Enemy(pygame.sprite.Sprite):
         layer.blit(self.image, (self.rect.x-self.offset[0], self.rect.y-self.offset[1]))
         pygame.draw.rect(layer, (0,60,200), self.rect, width=1)
 
-    
+    def check_dead(self, attack_sprite):
+        if attack_sprite != None:
+            if self.rect.colliderect(attack_sprite.rect):
+                self.dead = True
+
 class Ground_enemy(Enemy):
     def __init__(self, rect, image, offset) -> None:
         super().__init__(rect, image, offset)
@@ -110,6 +116,7 @@ class Follower_air(Air_enemy):
     def __init__(self, rect, image, offset, sight_distance) -> None:
         super().__init__(rect, image, offset)
         self.sight_distance = sight_distance
+        self.speed = 0.6
 
     def update(self, player):
         player_position = player_position_x, player_position_y = player.rect.center
