@@ -28,6 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.inputs = {"right": False, "left": False, "down": False, "jump": False, "attack": False}
 
         self.dead = False
+        self.dead_timer = 0
         
     def level_init(self, all_animations, all_sounds, x, y):
         self.animations = [[all_animations["player idle"], True, (10,8)], # INDEX 0
@@ -49,7 +50,7 @@ class Player(pygame.sprite.Sprite):
 
     def check_dead(self, enemies):
         for enemy in enemies:
-            if self.rect.colliderect(enemy.rect):
+            if self.rect.colliderect(enemy.rect) and not(self.dead):
                 self.dead = True
         
     def update(self, tiles):
@@ -155,7 +156,7 @@ class Player(pygame.sprite.Sprite):
                     self.change_animation(self.animations[3])
                 self.grounded
                 self.jump_delay = 0
-        else:
+        elif not(self.dead):
             self.speed_y += self.gravity /30
 
         if self.grounded and self.attacking and (self.current_ani == self.animations[2] or self.current_ani == self.animations[3]):
@@ -165,7 +166,11 @@ class Player(pygame.sprite.Sprite):
                 self.change_animation(self.animations[0])
 
         if self.dead:
-            self.speed_y = -14
+            if self.dead_timer == 0: self.dead_timer = 600
+            self.dead_timer -= self.game.delta_time
+            if self.dead_timer > 580:
+                self.speed_y = -2
+            else: self.speed_y += 0.05
 
 
         # xL: Applies the speed to the position
@@ -191,7 +196,7 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.y = int(self.y)
         hit_list = pygame.sprite.spritecollide(self, tiles, False)
-
+        
         collide_tolerance = 5
         for tile in hit_list:
             if abs(tile.rect.bottom - self.rect.top) < collide_tolerance:
@@ -202,7 +207,7 @@ class Player(pygame.sprite.Sprite):
                 self.rect.bottom = tile.rect.top
                 self.speed_y = 0
                 self.collision_directions["bottom"] = True
-            elif self.speed_y < 0:
+            elif self.speed_y < 0 and not(self.dead):
                 self.rect.top = tile.rect.bottom
                 self.speed_y = 0
                 self.collision_directions["top"] = True

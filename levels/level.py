@@ -30,6 +30,10 @@ class Level:
     def update(self):
         self.state.game.player.update(self.tiles_and_blocks)
         self.state.game.player.check_dead(self.enemies.sprites())
+
+        if self.state.game.player.dead and self.state.game.player.dead_timer < 0:
+            print("you died")
+        
         self.camera.update(self.state.game.player)
 
         enemy_remove_list = []
@@ -82,14 +86,16 @@ class Level:
     def render(self):
         self.level_surface.fill(colours["dark brown"], rect=self.camera.rect)
         self.level_surface.blit(self.background, (0, 0))
-        self.state.game.player.draw(self.level_surface)
-                
+        
         for tile in self.tiles_and_blocks.sprites():
             if (abs(self.state.game.player.rect.y - tile.rect.y) < 300) and (abs(self.state.game.player.rect.x - tile.rect.x) < 300):
                 tile.draw(self.level_surface)
         for enemy in self.enemies:
             if (abs(self.state.game.player.rect.y - enemy.rect.y) < 300) and (abs(self.state.game.player.rect.x - enemy.rect.x) < 300):
                 enemy.draw(self.level_surface)
+
+        self.state.game.player.draw(self.level_surface)
+        
         for particle in self.particles:
            particle.draw(self.level_surface)
 

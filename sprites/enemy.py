@@ -120,6 +120,8 @@ class Follower_air(Air_enemy):
 
     def update(self, player):
         player_position = player_position_x, player_position_y = player.rect.center
+        if player_position == self.rect.center:
+            self.speed_x, self.speed_y = 0, 0
         if abs(player_position_x - self.rect.x) < self.sight_distance and abs(player_position_y - self.rect.y) < self.sight_distance:
             angle = math.atan2(player_position_y - self.rect.centery, player_position_x - self.rect.centerx)
             self.speed_x, self.speed_y = math.cos(angle)*self.speed, math.sin(angle)*self.speed
