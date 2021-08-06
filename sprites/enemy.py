@@ -1,12 +1,13 @@
 import pygame, random, math
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, start_pos_x, start_pos_y, image) -> None:
+    def __init__(self, rect, image, offset) -> None:
         super().__init__()
         self.image = image
-        self.rect = self.image.get_rect(x = start_pos_x, y = start_pos_y)
-        self.x = float(start_pos_x)
-        self.y = float(start_pos_y)
+        self.rect = rect
+        self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
+        self.offset = offset
 
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
 
@@ -39,13 +40,14 @@ class Enemy(pygame.sprite.Sprite):
             self.y = self.rect.y
             
     def draw(self, layer):
+        layer.blit(self.image, (self.rect.x-self.offset[0], self.rect.y-self.offset[1]))
         pygame.draw.rect(layer, (0,60,200), self.rect, width=1)
 
     
 class Ground_enemy(Enemy):
-    def __init__(self, start_pos_x, start_pos_y, image) -> None:
-        super().__init__(start_pos_x, start_pos_y, image)
-        self.speed_x, self.speed_y = 0.5, 0.5
+    def __init__(self, rect, image, offset) -> None:
+        super().__init__(rect, image, offset)
+        self.speed_x, self.speed_y = 0.5, 0
 
     def update(self, player):
         if self.collision_directions["left"] or self.collision_directions["right"]:
@@ -58,8 +60,8 @@ class Ground_enemy(Enemy):
 
 
 class Air_enemy(Enemy):
-    def __init__(self, start_pos_x, start_pos_y, image) -> None:
-        super().__init__(start_pos_x, start_pos_y, image)
+    def __init__(self, rect, image, offset) -> None:
+        super().__init__(rect, image, offset)
         speed = 0.5
         angle = random.random()*6.28
         self.speed_x, self.speed_y = math.cos(angle)*speed, math.sin(angle)*speed
@@ -72,50 +74,47 @@ class Air_enemy(Enemy):
             
 
 class Follower_ground(Ground_enemy):
-    def __init__(self, start_pos_x, start_pos_y, image, sight_distance) -> None:
-        super().__init__(start_pos_x, start_pos_y, image)
+    def __init__(self, rect, image, offset, sight_distance) -> None:
+        super().__init__(rect, image, offset)
         self.sight_distance = sight_distance
         self.wandering = True
-        self.wandering_timer = 1000
+        self.wandering_timer = 100
+        self.speed = 0.6
+        self.speed_x, self.speed_y = 0.6, 0
 
     def update(self, player):
         player_position = player_position_x, player_position_y = player.rect.center
-        if abs(player_position_x - self.rect.x) < self.sight_distance:
+        if abs(player_position_x - self.rect.x) < self.sight_distance and abs(player_position_y - self.rect.y) < self.sight_distance:
             self.wandering = False
             self.wandering_timer = 0
             if player_position_x > self.rect.x: # player is on the right side
-                self.speed_x = 0.5
+                self.speed_x = self.speed
             elif player_position_x < self.rect.x: # player is on the left side
-                self.speed_x = -0.5
+                self.speed_x = -self.speed
             else: self.speed_x = 0
         elif self.wandering_timer <= 0:
             self.wandering = True
-            self.wandering_timer = 1000
-            self.speed_x = random.randint(-6,6)/10
+            self.wandering_timer = 100
+            self.speed_x = random.randint(-4,4)/10
 
         if self.wandering and self.wandering_timer > 0:
             self.wandering_timer -= 1
-                
-        if self.collision_directions["left"] or self.collision_directions["right"]:
-            self.speed_x *= -1
+
+        # Gravity
+        self.speed_y += 0.05
+        if self.collision_directions["bottom"]:
+            self.speed_y = 0
+            
                 
 class Follower_air(Air_enemy):
-    def __init__(self, start_pos_x, start_pos_y, image, sight_distance) -> None:
-        super().__init__(start_pos_x, start_pos_y, image)
+    def __init__(self, rect, image, offset, sight_distance) -> None:
+        super().__init__(rect, image, offset)
         self.sight_distance = sight_distance
 
-    def update(self, tiles, player):
+    def update(self, player):
         player_position = player_position_x, player_position_y = player.rect.center
-        if ( abs(player_position_x - self.rect.x) > self.sight_distance
-          or abs(player_position_y - self.rect.y) > self.sight_distance):
-            super().update()
+        if abs(player_position_x - self.rect.x) < self.sight_distance and abs(player_position_y - self.rect.y) < self.sight_distance:
+            angle = math.atan2(player_position_y - self.rect.centery, player_position_x - self.rect.centerx)
+            self.speed_x, self.speed_y = math.cos(angle)*self.speed, math.sin(angle)*self.speed
         else:
-            self.move(tiles, player_position)
-    
-    def move(self, tiles, player_position):
-        potition_vector_self = pygame.math.Vector2(self.x, self.y)
-        potition_vector_player = pygame.math.Vector2(player_position)
-
-        self.direction_vector = potition_vector_player - potition_vector_self
-        self.direction_vector.normalize_ip()
-        super().move(tiles)
+            super().update(player)

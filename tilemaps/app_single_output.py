@@ -34,10 +34,10 @@ def create_room(area, fw, fh, **kwargs):
     divisor = int(world['chance_treasure'])
     gen_chest_check = False
     treasure_chest_key = int(world['treasure_chest_key'])
-    print(f'pick_num {pick_num} divisor {divisor}')
+    #print(f'pick_num {pick_num} divisor {divisor}')
     if pick_num > divisor:
         gen_chest_check = True
-    print(f'gen_chest_check {gen_chest_check}')
+    #print(f'gen_chest_check {gen_chest_check}')
     p_h = p_y + h
     if p_h > int(world['depth_section_height']):
         p_h -= (p_h - int(world['depth_section_height']))
@@ -61,7 +61,7 @@ def create_room(area, fw, fh, **kwargs):
             e_x -= (e_x - int(world['field_width']))
         if e_y > int(world['depth_section_height']):
             e_y -= (e_y - int(world['depth_section_height']))
-        print(f'e_x:{e_x} e_y:{e_y}')
+        #print(f'e_x:{e_x} e_y:{e_y}')
         area[e_y][e_x] = enemy_key
         gap += 1
 
@@ -95,6 +95,8 @@ def app():
             enemies.append(config[f'enemy_{i}'])
         sorted(enemies, key=lambda enemy: int(enemy['difficulty']))
 
+        print(enemies)
+
         room = config['room']
         minimum_space_w = int(room['minimum_space_w'])
         minimum_space_h = int(room['minimum_space_h'])
@@ -118,7 +120,7 @@ def app():
             encountered.append(int(enemy['key_value']))
             # choose how many rooms we want in the dirt
             num_rooms = random.choice([i for i in range(int(world['min_rooms']), int(world['max_rooms']))])
-            print({'min_w': minimum_space_w, 'min_h': minimum_space_h, 'max_w': maximum_space_w, 'max_h': maximum_space_h})
+            #print({'min_w': minimum_space_w, 'min_h': minimum_space_h, 'max_w': maximum_space_w, 'max_h': maximum_space_h})
             for _ in range(0, num_rooms):
                 create_room(area, field_width, depth_height, **{'min_w': minimum_space_w, 'min_h': minimum_space_h, 'max_w': maximum_space_w, 'max_h': maximum_space_h, 'enemies': encountered})
             for row in area:
@@ -133,7 +135,7 @@ def app():
             area = create_underground_dirt_area(field_width, depth_height, 0)
             # choose how many rooms we want in the dirt
             num_rooms = random.choice([i for i in range(int(world['min_rooms']), int(world['max_rooms']))])
-            print({'min_w': minimum_space_w, 'min_h': minimum_space_h, 'max_w': maximum_space_w, 'max_h': maximum_space_h})
+            #print({'min_w': minimum_space_w, 'min_h': minimum_space_h, 'max_w': maximum_space_w, 'max_h': maximum_space_h})
             for _ in range(0, num_rooms):
                 #choose random enemies to put into room
                 num_rooms = random.choice([i for i in range(1, len(encountered))])
