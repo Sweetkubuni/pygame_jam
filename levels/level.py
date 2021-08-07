@@ -42,7 +42,7 @@ class Level:
         particle_remove_list = []
         i = 0
         for particle in self.particles:
-            particle.update(self.areas[self.current_area][0], self.state.game.player, len(particle_remove_list))
+            particle.update(self.areas[self.current_area][0], self.state.game.player, len(particle_remove_list), True)
             if particle.timer >= particle.max_timer:
                 particle_remove_list.append(i)
                 if particle.pick_up:
@@ -62,7 +62,7 @@ class Level:
         particle_remove_list = []
         i = 0
         for particle in self.particles:
-            particle.update(self.areas[self.current_area + 1][0], self.state.game.player, len(particle_remove_list))
+            particle.update(self.areas[self.current_area + 1][0], self.state.game.player, len(particle_remove_list), False)
             if particle.timer >= particle.max_timer:
                 particle_remove_list.append(i)
                 if particle.pick_up:

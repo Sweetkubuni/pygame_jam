@@ -1,10 +1,11 @@
 import pygame, random, math
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, rect, image, offset, level_width, area_top, area_bottom) -> None:
+    def __init__(self, rect, image, offset, level_width, area_top, area_bottom, game) -> None:
         super().__init__()
         self.image = image
         self.rect = rect
+        self.game = game
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
         self.offset = offset
@@ -18,8 +19,8 @@ class Enemy(pygame.sprite.Sprite):
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
 
     def move(self, tiles):
-        self.x += self.speed_x
-        self.y += self.speed_y
+        self.x += self.speed_x * self.game.delta_time
+        self.y += self.speed_y * self.game.delta_time
 
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
 
@@ -71,23 +72,23 @@ class Enemy(pygame.sprite.Sprite):
                 self.dead = True
 
 class Ground_enemy(Enemy):
-    def __init__(self, rect, image, offset, level_width, area_top, area_bottom) -> None:
-        super().__init__(rect, image, offset, level_width, area_top, area_bottom)
+    def __init__(self, rect, image, offset, level_width, area_top, area_bottom, game) -> None:
+        super().__init__(rect, image, offset, level_width, area_top, area_bottom, game)
         self.speed_x, self.speed_y = 0.5, 0
 
     def update(self, player):
         if self.collision_directions["left"] or self.collision_directions["right"]:
             self.speed_x *= -1
         # Gravity
-        self.speed_y += 0.05
+        self.speed_y += 0.05 * self.game.delta_time
 
         if self.collision_directions["bottom"]:
             self.speed_y = 0
 
 
 class Air_enemy(Enemy):
-    def __init__(self, rect, image, offset, level_width, area_top, area_bottom) -> None:
-        super().__init__(rect, image, offset, level_width, area_top, area_bottom)
+    def __init__(self, rect, image, offset, level_width, area_top, area_bottom, game) -> None:
+        super().__init__(rect, image, offset, level_width, area_top, area_bottom, game)
         speed = 0.5
         angle = random.random()*6.28
         self.speed_x, self.speed_y = math.cos(angle)*speed, math.sin(angle)*speed
@@ -100,8 +101,8 @@ class Air_enemy(Enemy):
             
 
 class Follower_ground(Ground_enemy):
-    def __init__(self, rect, image, offset, sight_distance, level_width, area_top, area_bottom) -> None:
-        super().__init__(rect, image, offset, level_width, area_top, area_bottom)
+    def __init__(self, rect, image, offset, sight_distance, level_width, area_top, area_bottom, game) -> None:
+        super().__init__(rect, image, offset, level_width, area_top, area_bottom, game)
         self.sight_distance = sight_distance
         self.wandering = True
         self.wandering_timer = 100
@@ -124,17 +125,17 @@ class Follower_ground(Ground_enemy):
             self.speed_x = random.randint(-4,4)/10
 
         if self.wandering and self.wandering_timer > 0:
-            self.wandering_timer -= 1
+            self.wandering_timer -= self.game.delta_time
 
         # Gravity
-        self.speed_y += 0.05
+        self.speed_y += 0.05 * self.game.delta_time
         if self.collision_directions["bottom"]:
             self.speed_y = 0
             
                 
 class Follower_air(Air_enemy):
-    def __init__(self, rect, image, offset, sight_distance, level_width, area_top, area_bottom) -> None:
-        super().__init__(rect, image, offset, level_width, area_top, area_bottom)
+    def __init__(self, rect, image, offset, sight_distance, level_width, area_top, area_bottom, game) -> None:
+        super().__init__(rect, image, offset, level_width, area_top, area_bottom, game)
         self.sight_distance = sight_distance
         self.speed = 0.6
 

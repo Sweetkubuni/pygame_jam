@@ -32,11 +32,11 @@ class Game_over(State):
         
     def load_sprites(self):
         self.all_sprites = pygame.sprite.Group()
-        self.game_over_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "GAME OVER", colours["white"], False, self.game.GAME_WIDTH *.5, 80-40, True)
+        self.game_over_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "GAME OVER", colours["red"], False, self.game.GAME_WIDTH *.5, 80-40, True)
         self.coins_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Coins - "  + str(self.player_coins), colours["white"], False, self.game.GAME_WIDTH *.5, 140-40, True)
         self.kills_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Enemies - " + str(self.player_kills), colours["white"], False, self.game.GAME_WIDTH *.5, 165-40, True)
         self.height_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Depth - " + str(int(self.player_height)), colours["white"], False, self.game.GAME_WIDTH *.5, 190-40, True)
-        self.score_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "YOUR SCORE - " + str(20*int(self.player_coins) + 40*int(self.player_kills) + 10*int(self.player_height)), colours["white"], False, self.game.GAME_WIDTH *.5, 240-40, True)
+        self.score_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "YOUR SCORE - " + str(20*int(self.player_coins) + 40*int(self.player_kills) + 10*int(self.player_height)), colours["blue"], False, self.game.GAME_WIDTH *.5, 240-40, True)
     def update(self):
         """Update the menu state."""
         self.game.check_inputs()
@@ -52,18 +52,18 @@ class Game_over(State):
             if self.total_player_coins > self.player_coins: self.player_coins += 0.5
             self.coins_txt.update(self.game.game_canvas, content = "Coins - "  + str(int(self.player_coins)))
         if self.score_timer == 120:
-            pygame.mixer.find_channel(True).play(self.all_sounds["coin"])
+            pygame.mixer.find_channel(True).play(self.all_sounds["thing"])
             
         if self.score_timer > 200:
             if self.total_player_kills > self.player_kills: self.player_kills += 0.2
             self.kills_txt.update(self.game.game_canvas, content = "Enemies - " + str(int(self.player_kills)))
         if self.score_timer == 200:
-            pygame.mixer.find_channel(True).play(self.all_sounds["coin"])
+            pygame.mixer.find_channel(True).play(self.all_sounds["thing"])
             
         if self.score_timer > 280:
             if self.total_player_height > self.player_height: self.player_height += 10
             self.height_txt.update(self.game.game_canvas, content = "Depth - " + str(int(self.player_height)))
         if self.score_timer == 280:
-            pygame.mixer.find_channel(True).play(self.all_sounds["coin"])
+            pygame.mixer.find_channel(True).play(self.all_sounds["thing"])
 
         self.score_txt.update(self.game.game_canvas, "YOUR SCORE - " + str(20*int(self.player_coins) + 40*int(self.player_kills) + 10*int(self.player_height)))

@@ -29,22 +29,22 @@ class Particle():
             
         self.timer = 0
 
-    def update(self, tiles, rect, ass):
-        pass
+    def update(self, tiles, rect, ass, first_update):
+        if first_update:
+            for particle in self.particles:
+                particle[1] += particle[3] * self.tilemap.level.state.game.delta_time
+                particle[2] += particle[4] * self.tilemap.level.state.game.delta_time
+                # pseudo gravity
+                particle[4] += 0.05 * self.tilemap.level.state.game.delta_time
+
+                particle[0].rect.x, particle[0].rect.y = int(particle[1]), int(particle[2])
+
+            self.timer += self.tilemap.level.state.game.delta_time
 
     def draw(self, layer):
         for particle in self.particles:
-            particle[1] += particle[3] * self.tilemap.level.state.game.delta_time
-            particle[2] += particle[4] * self.tilemap.level.state.game.delta_time
-            # pseudo gravity
-            particle[4] += 0.05 * self.tilemap.level.state.game.delta_time
-
-            particle[0].rect.x, particle[0].rect.y = int(particle[1]), int(particle[2])
-            
             layer.blit(self.animation[0][self.ani_frame][0], (particle[0].rect.x-self.animation[2][0], particle[0].rect.y-self.animation[2][1]))
             #pygame.draw.rect(self.tilemap.level.state.game.game_canvas, (250,0,0), self.tilemap.level.camera.apply(particle[0]), width=2)
-            
-        self.timer += self.tilemap.level.state.game.delta_time
 
         if self.ani_timer < self.animation[0][self.ani_frame][1]:
             self.ani_timer += self.tilemap.level.state.game.delta_time

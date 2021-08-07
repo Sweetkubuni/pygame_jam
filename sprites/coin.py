@@ -22,18 +22,20 @@ class Coin(pygame.sprite.Sprite):
 
         self.sounds = {"coin": all_sounds["coin"]}
         
-    def update(self, tiles, player_sprite, previous_delete):
-        self.timer += self.game.delta_time
+    def update(self, tiles, player_sprite, previous_delete, first_update):
 
-        if self.rect.colliderect(player_sprite.rect) and not(self.pick_up):
-            self.pick_up = True
-            self.timer = self.max_timer
+        if first_update:
+            self.timer += self.game.delta_time
 
-        # pseudo gravity
-        self.speed_y += 0.05 * self.game.delta_time
-        
-        self.x += self.speed_x * self.game.delta_time
-        self.y += self.speed_y * self.game.delta_time       
+            if self.rect.colliderect(player_sprite.rect) and not(self.pick_up):
+                self.pick_up = True
+                self.timer = self.max_timer
+
+            # pseudo gravity
+            self.speed_y += 0.05 * self.game.delta_time
+            
+            self.x += self.speed_x * self.game.delta_time
+            self.y += self.speed_y * self.game.delta_time       
         
         self.rect.x = int(self.x)
         hit_list = pygame.sprite.spritecollide(self, tiles, False)
