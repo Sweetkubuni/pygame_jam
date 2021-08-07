@@ -4,6 +4,7 @@ import math
 import random
 from random import randrange
 import time
+import os
 
 def create_underground_dirt_area(width, height, dirt_key):
     area = []
@@ -26,7 +27,7 @@ def create_room(area, fw, fh, **kwargs):
     p_y = y * h;
 
     config = configparser.ConfigParser()
-    config.read('tilemaps\\settings.ini')
+    config.read(os.path.join(tilemaps, 'settings.ini'))
 
     world = config['world']
 
@@ -68,7 +69,7 @@ def create_room(area, fw, fh, **kwargs):
 
 def app():
     config = configparser.ConfigParser()
-    config.read('tilemaps\\settings.ini')
+    config.read(os.path.join(tilemaps, 'settings.ini'))
 
     world = config['world']
     field_width = int(world['field_width'])
