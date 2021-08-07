@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.attacking = False
         self.attacking_down = False
         self.attack_timer = 0
+        self.attack_offset = 0
         self.attack_sprite = None
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
         self.inputs = {"right": False, "left": False, "down": False, "jump": False, "attack": False}
@@ -40,6 +41,7 @@ class Player(pygame.sprite.Sprite):
                            [all_animations["player fall"], False, (10,8)], # INDEX 3
                            [all_animations["player attack"], False, (6,8)], # INDEX 4
                            [all_animations["player attack down"], False, (10,8)], # INDEX 5
+                           [all_animations["player dead"], False, (6,6)] # INDEX 6
                            ]
         self.ani_timer = 0
         self.ani_frame = 0
@@ -73,7 +75,7 @@ class Player(pygame.sprite.Sprite):
                 self.inputs["jump"] = True
             if self.game.actions[pygame.K_z]:
                 self.inputs["attack"] = True
-  
+                
         # Animation orientation
         if self.inputs["right"]:
             self.flip = False
@@ -109,6 +111,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.attacking:
             self.attack_timer -= self.game.delta_time
+            self.attack_offset = (80 - self.attack_timer)// 4
             if self.attacking_down and self.attack_timer > 0:
                 if self.attack_timer > 0:
                     self.change_animation(self.animations[5])
@@ -118,9 +121,9 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.attack_sprite.rect.topleft = (self.rect.x-4, self.rect.y+20)
             elif self.flip and self.attack_timer > 0:
-                self.attack_sprite.rect.topleft = (self.rect.x - 10, self.rect.y+5)
+                self.attack_sprite.rect.topleft = (self.rect.x - 10, self.rect.y+12 - self.attack_offset)
             elif self.attack_timer > 0:
-                self.attack_sprite.rect.topleft = (self.rect.x + 10, self.rect.y+5)
+                self.attack_sprite.rect.topleft = (self.rect.x + 10, self.rect.y+12 - self.attack_offset)
 
         if self.attack_timer < 0:
             self.attack_sprite = None
@@ -129,7 +132,7 @@ class Player(pygame.sprite.Sprite):
                 self.attacking_down = False
 
         # Return to idle
-        if self.speed_x == 0 and self.grounded and not(self.attacking):
+        if self.speed_x == 0 and self.grounded and not(self.attacking) and not(self.dead):
             self.change_animation(self.animations[0])
 
         # Jump code
@@ -168,9 +171,11 @@ class Player(pygame.sprite.Sprite):
                 self.change_animation(self.animations[0])
 
         if self.dead:
-            if self.dead_timer == 0: self.dead_timer = 400
+            if self.dead_timer == 0:
+                self.change_animation(self.animations[6])
+                self.dead_timer = 300
             self.dead_timer -= self.game.delta_time
-            if self.dead_timer > 380:
+            if self.dead_timer > 280:
                 self.speed_y = -2
             else: self.speed_y += 0.05
 
@@ -181,19 +186,20 @@ class Player(pygame.sprite.Sprite):
 
         # Collision direction from the player reference point
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
-        
+
         self.rect.x = int(self.x)
-        hit_list = pygame.sprite.spritecollide(self, tiles, False)
 
         # Screen boundaries
-        if self.rect.x <= 0 and self.speed_x < 0:
+        if self.rect.x < 0 and self.speed_x < 0:
             self.rect.left = 0
             self.collision_directions["left"] = True
             self.x = self.rect.x
-        if self.rect.right >= self.level_width and self.speed_x > 0:
+        if self.rect.right > self.level_width and self.speed_x > 0:
             self.rect.right = self.level_width
             self.collision_directions["right"] = True
             self.x = self.rect.x
+
+        hit_list = pygame.sprite.spritecollide(self, tiles, False)
 
         for tile in hit_list:
             if self.speed_x > 0:
@@ -205,6 +211,7 @@ class Player(pygame.sprite.Sprite):
             self.x = self.rect.x
 
         self.rect.y = int(self.y)
+            
         hit_list = pygame.sprite.spritecollide(self, tiles, False)
         
         collide_tolerance = 5
@@ -248,6 +255,6 @@ class Player(pygame.sprite.Sprite):
                 if self.current_ani[1] == True:
                     self.ani_timer, self.ani_frame = 0, 0
                 else: self.change_animation(self.previous_ani)
-        pygame.draw.rect(layer, (0,60,200), self.rect, width=1)
-        if self.attack_sprite != None:
-            pygame.draw.rect(layer, (215,10,30), self.attack_sprite.rect, width=1)
+        #pygame.draw.rect(layer, (0,60,200), self.rect, width=1)
+        #if self.attack_sprite != None:
+            #pygame.draw.rect(layer, (215,10,30), self.attack_sprite.rect, width=1)

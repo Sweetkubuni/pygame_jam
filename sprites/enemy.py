@@ -1,13 +1,17 @@
 import pygame, random, math
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, rect, image, offset) -> None:
+    def __init__(self, rect, image, offset, level_width, area_top, area_bottom) -> None:
         super().__init__()
         self.image = image
         self.rect = rect
         self.x = float(self.rect.x)
         self.y = float(self.rect.y)
         self.offset = offset
+
+        self.area_top, self.area_bottom = area_top, area_bottom
+
+        self.level_width = level_width
 
         self.dead = False
 
@@ -20,7 +24,19 @@ class Enemy(pygame.sprite.Sprite):
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
 
         self.rect.x = int(self.x)
+
+        # Screen boundaries
+        if self.rect.x < 0 and self.speed_x < 0:
+            self.rect.left = 0
+            self.collision_directions["left"] = True
+            self.x = self.rect.x
+        if self.rect.right > self.level_width and self.speed_x > 0:
+            self.rect.right = self.level_width
+            self.collision_directions["right"] = True
+            self.x = self.rect.x
+            
         hit_list = pygame.sprite.spritecollide(self, tiles, False)
+                
         for hit in hit_list:
             if self.speed_x > 0:
                 self.rect.right = hit.rect.left
@@ -40,10 +56,14 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect.top = tile.rect.bottom
                 self.collision_directions["top"] = True
             self.y = self.rect.y
+
+        # Move to another area different to current one -> kill it! (for now)
+        if self.rect.top < self.area_top or self.area_bottom > self.area_bottom:
+            self.dead = True
             
     def draw(self, layer):
         layer.blit(self.image, (self.rect.x-self.offset[0], self.rect.y-self.offset[1]))
-        pygame.draw.rect(layer, (0,60,200), self.rect, width=1)
+        #pygame.draw.rect(layer, (0,60,200), self.rect, width=1)
 
     def check_dead(self, attack_sprite):
         if attack_sprite != None:
@@ -51,8 +71,8 @@ class Enemy(pygame.sprite.Sprite):
                 self.dead = True
 
 class Ground_enemy(Enemy):
-    def __init__(self, rect, image, offset) -> None:
-        super().__init__(rect, image, offset)
+    def __init__(self, rect, image, offset, level_width, area_top, area_bottom) -> None:
+        super().__init__(rect, image, offset, level_width, area_top, area_bottom)
         self.speed_x, self.speed_y = 0.5, 0
 
     def update(self, player):
@@ -66,8 +86,8 @@ class Ground_enemy(Enemy):
 
 
 class Air_enemy(Enemy):
-    def __init__(self, rect, image, offset) -> None:
-        super().__init__(rect, image, offset)
+    def __init__(self, rect, image, offset, level_width, area_top, area_bottom) -> None:
+        super().__init__(rect, image, offset, level_width, area_top, area_bottom)
         speed = 0.5
         angle = random.random()*6.28
         self.speed_x, self.speed_y = math.cos(angle)*speed, math.sin(angle)*speed
@@ -80,8 +100,8 @@ class Air_enemy(Enemy):
             
 
 class Follower_ground(Ground_enemy):
-    def __init__(self, rect, image, offset, sight_distance) -> None:
-        super().__init__(rect, image, offset)
+    def __init__(self, rect, image, offset, sight_distance, level_width, area_top, area_bottom) -> None:
+        super().__init__(rect, image, offset, level_width, area_top, area_bottom)
         self.sight_distance = sight_distance
         self.wandering = True
         self.wandering_timer = 100
@@ -113,8 +133,8 @@ class Follower_ground(Ground_enemy):
             
                 
 class Follower_air(Air_enemy):
-    def __init__(self, rect, image, offset, sight_distance) -> None:
-        super().__init__(rect, image, offset)
+    def __init__(self, rect, image, offset, sight_distance, level_width, area_top, area_bottom) -> None:
+        super().__init__(rect, image, offset, level_width, area_top, area_bottom)
         self.sight_distance = sight_distance
         self.speed = 0.6
 
