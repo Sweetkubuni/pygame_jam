@@ -23,7 +23,6 @@ class Coin(pygame.sprite.Sprite):
         self.sounds = {"coin": all_sounds["coin"]}
         
     def update(self, tiles, player_sprite, previous_delete):
-
         self.timer += self.game.delta_time
 
         if self.rect.colliderect(player_sprite.rect) and not(self.pick_up):

@@ -43,7 +43,9 @@ class Tile_map:
                     enemies.add(Follower_air(pygame.Rect(x * self.tile_size, y * self.tile_size, 9, 8), loadImage(os.path.join(game.image_directory, "fly_follow.png")), (4, 7), 90, self.area_wide * self.tile_size, len(areas) * self.area_tall * 16,  (len(areas) + 1) * self.area_tall * 16))
                 for tile_key in tile_keys:
                     if tile == tile_key:
-                        if tile == 0 or tile == 1: # Dirt and grass are destructable
+                        if tile == 2: # Metal block
+                            tiles_and_blocks.add(Tile(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, False))
+                        if tile == 0 or tile == 1 or tile == 4: # Dirt and grass are destructable, chest too
                             # I'm passing the Block object , the tile_id as "tile" so each block has unique properties and interactions
                             tiles_and_blocks.add(Block(self, tile_keys[tile_key], x * self.tile_size, y * self.tile_size, True, tile, all_animations, all_sounds))
                         else:

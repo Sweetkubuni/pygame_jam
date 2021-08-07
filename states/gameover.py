@@ -32,11 +32,11 @@ class Game_over(State):
         
     def load_sprites(self):
         self.all_sprites = pygame.sprite.Group()
-        self.game_over_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "GAME OVER", colours["white"], False, self.game.GAME_WIDTH *.5, 80, True)
-        self.coins_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Coins - "  + str(self.player_coins), colours["white"], False, self.game.GAME_WIDTH *.5, 140, True)
-        self.kills_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Enemies - " + str(self.player_kills), colours["white"], False, self.game.GAME_WIDTH *.5, 165, True)
-        self.height_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Depth - " + str(int(self.player_height)), colours["white"], False, self.game.GAME_WIDTH *.5, 190, True)
-        self.score_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "YOUR SCORE - " + str(20*int(self.player_coins) + 40*int(self.player_kills) + 10*int(self.player_height)), colours["white"], False, self.game.GAME_WIDTH *.5, 240, True)
+        self.game_over_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "GAME OVER", colours["white"], False, self.game.GAME_WIDTH *.5, 80-40, True)
+        self.coins_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Coins - "  + str(self.player_coins), colours["white"], False, self.game.GAME_WIDTH *.5, 140-40, True)
+        self.kills_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Enemies - " + str(self.player_kills), colours["white"], False, self.game.GAME_WIDTH *.5, 165-40, True)
+        self.height_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "Depth - " + str(int(self.player_height)), colours["white"], False, self.game.GAME_WIDTH *.5, 190-40, True)
+        self.score_txt = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "YOUR SCORE - " + str(20*int(self.player_coins) + 40*int(self.player_kills) + 10*int(self.player_height)), colours["white"], False, self.game.GAME_WIDTH *.5, 240-40, True)
     def update(self):
         """Update the menu state."""
         self.game.check_inputs()

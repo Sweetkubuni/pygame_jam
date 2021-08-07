@@ -9,7 +9,11 @@ class Block(Tile):
         self.x, self.y = float(x), float(y)
         self.speed_x, self.speed_y = 0, 0
         self.delete = False
-        self.sounds = {"explodeBrick": all_sounds["explodeBrick"]}
+
+        if self.tile_id == 0 or self.tile_id == 1:
+            self.sounds = {"delete": all_sounds["dirt"]}
+        if self.tile_id == 4:
+            self.sounds = {"delete": all_sounds["chest"]}
         
     def update(self, attack_sprite, previous_delete):
         if attack_sprite != None and not(previous_delete):

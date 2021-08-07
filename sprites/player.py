@@ -31,6 +31,8 @@ class Player(pygame.sprite.Sprite):
         self.dead = False
         self.dead_timer = 0
 
+        self.dead_depth = 0
+
         self.coins = 0
         self.kills = 0
         
@@ -48,7 +50,7 @@ class Player(pygame.sprite.Sprite):
         self.current_ani = self.animations[0] # set player idle as initial animation
         self.flip = False # horizontal flip
 
-        self.sounds = {"jumpy": all_sounds["jumpy"]}
+        self.sounds = {"jumpy": all_sounds["jumpy"], "kill enemy": all_sounds["kill enemy"], "lose": all_sounds["lose"]}
 
         self.level_width = level_width
 
@@ -172,6 +174,8 @@ class Player(pygame.sprite.Sprite):
 
         if self.dead:
             if self.dead_timer == 0:
+                pygame.mixer.find_channel(True).play(self.sounds["lose"])
+                self.dead_depth = self.rect.bottom
                 self.change_animation(self.animations[6])
                 self.dead_timer = 300
             self.dead_timer -= self.game.delta_time

@@ -44,18 +44,10 @@ class Main_menu(State):
 
     def render(self):
         """Render the menu state."""
-        self.game.game_canvas.blit(self.menu_screen_img, (0,0))
+        self.game.game_canvas.blit(self.menu_screen_img, (0,-30))
         self.all_sprites.draw(self.game.game_canvas)
-
-        self.text_loop -= 1
-
-        if self.text_loop < 0:
-            self.all_sprites.sprites()[0].update(content = ">Press ENTER To Start!<")
-            if self.text_loop < -30: self.text_loop = 30
-        else:
-            self.all_sprites.sprites()[0].update(content = "> Press ENTER To Start! <")
         
-        self.game.game_canvas.blit(self.current_ani[0][self.ani_frame][0], (20,12))
+        self.game.game_canvas.blit(self.current_ani[0][self.ani_frame][0], (20,12-30))
         if self.ani_timer < self.current_ani[0][self.ani_frame][1]:
             self.ani_timer += self.game.delta_time
         else:
@@ -66,3 +58,10 @@ class Main_menu(State):
                 
                 self.ani_timer, self.ani_frame = 0, 0
             else: self.change_animation(self.previous_ani[3])
+
+        self.text_loop -= 1
+        if self.text_loop < 0:
+            self.all_sprites.sprites()[0].update(content = ">Press ENTER To Start!<")
+            if self.text_loop < -30: self.text_loop = 30
+        else:
+            self.all_sprites.sprites()[0].update(content = "> Press ENTER To Start! <")

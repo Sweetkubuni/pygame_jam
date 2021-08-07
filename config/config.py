@@ -39,5 +39,5 @@ tile_keys = {
     1: loadImage(os.path.join(assets, "grass.png")),
     2: loadImage(os.path.join(assets, "metal.png")),
     3: loadImage(os.path.join(assets, "brick.png")),
-    4: loadImage(os.path.join(assets, "mushroom.png"))
+    4: loadImage(os.path.join(assets, "chest.png"))
 }

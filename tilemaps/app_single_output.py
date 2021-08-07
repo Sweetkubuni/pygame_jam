@@ -34,6 +34,7 @@ def create_room(area, fw, fh, **kwargs):
     divisor = int(world['chance_treasure'])
     gen_chest_check = False
     treasure_chest_key = int(world['treasure_chest_key'])
+    metal_key = int(world['metal_key'])
     #print(f'pick_num {pick_num} divisor {divisor}')
     if pick_num > divisor:
         gen_chest_check = True
