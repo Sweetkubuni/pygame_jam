@@ -80,7 +80,7 @@ def app():
         this generates the starting area; so... no enemies!!!
     """
 
-    with open('tilemaps\\world.csv', 'w', newline='') as csvfile:
+    with open(os.path.join(tilemaps, 'world.csv'), 'w', newline='') as csvfile:
         areawriter = csv.writer(csvfile, delimiter=',')
 
         for i in range(0, sky_height):
