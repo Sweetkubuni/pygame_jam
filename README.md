@@ -8,7 +8,7 @@ INSTRUCTIONS:
 
 
 -------- CONTROLS -----------
-Move -> Arrow keys "Left" and "Right" keys
-Jump -> Arrow key "Up" key
-Shovel -> "Z" key -> Hold to dig an horizontal tunnel
-Shovel Down -> "Down" + "Z" keys
+- Move -> Arrow keys "Left" and "Right" keys
+- Jump -> Arrow key "Up" key
+- Shovel -> "Z" key -> Hold to dig an horizontal tunnel
+- Shovel Down -> "Down" + "Z" keys
