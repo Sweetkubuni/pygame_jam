@@ -27,7 +27,7 @@ class Level:
         self.camera = Camera(self.state.game.player, self.state.game.GAME_WIDTH, self.state.game.GAME_HEIGHT, self.level_surface)
         self.camera_surface = pygame.Surface((self.state.game.GAME_WIDTH, self.state.game.GAME_HEIGHT))
 
-        self.current_fps = Text(self.camera_surface, os.path.join(self.state.game.font_directory,"alphbeta.ttf"), 22, str(self.state.game.clock.get_fps()).split(".")[0], colours["black"], False, 20, 20, False)
+        #self.current_fps = Text(self.camera_surface, os.path.join(self.state.game.font_directory,"alphbeta.ttf"), 22, str(self.state.game.clock.get_fps()).split(".")[0], colours["black"], False, 20, 20, False)
         
     def update(self):
 
@@ -152,7 +152,7 @@ class Level:
 
         # CHANGE AREA BY 1 PLACE --------------------------------------------------
         # falling into next area
-        if self.state.game.player.rect.bottom > 20*16*(self.current_area + 1.8):
+        if self.state.game.player.rect.bottom > 20*16*(self.current_area + 1.5):
             self.current_area += 1
         
     def render(self):
@@ -177,6 +177,6 @@ class Level:
         self.camera_surface.blit(self.level_surface, (0,0), area=(self.camera.rect.x, self.camera.rect.y, self.camera.width, self.camera.height))
 
         # UI
-        self.current_fps.update(content=str(self.state.game.clock.get_fps()).split(".")[0])
+        #self.current_fps.update(content=str(self.state.game.clock.get_fps()).split(".")[0])
         
         self.state.game.game_canvas.blit(self.camera_surface, (0,0))
