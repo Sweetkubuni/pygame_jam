@@ -50,7 +50,9 @@ class Player(pygame.sprite.Sprite):
         self.current_ani = self.animations[0] # set player idle as initial animation
         self.flip = False # horizontal flip
 
-        self.sounds = {"jumpy": all_sounds["jumpy"], "kill enemy": all_sounds["kill enemy"], "lose": all_sounds["lose"]}
+        self.sounds = {"jumpy": all_sounds["jumpy"], "puff": all_sounds["puff"], "lose": all_sounds["lose"]}
+
+        self.sounds["jumpy"].set_volume(0.6)
 
         self.level_width = level_width
 
@@ -113,7 +115,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.attacking:
             self.attack_timer -= self.game.delta_time
-            self.attack_offset = (80 - self.attack_timer)// 4
+            self.attack_offset = (80 - self.attack_timer)// 6
             if self.attacking_down and self.attack_timer > 0:
                 if self.attack_timer > 0:
                     self.change_animation(self.animations[5])
@@ -123,9 +125,9 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.attack_sprite.rect.topleft = (self.rect.x-4, self.rect.y+20)
             elif self.flip and self.attack_timer > 0:
-                self.attack_sprite.rect.topleft = (self.rect.x - 10, self.rect.y+12 - self.attack_offset)
+                self.attack_sprite.rect.topleft = (self.rect.x - 10, self.rect.y+10 - self.attack_offset)
             elif self.attack_timer > 0:
-                self.attack_sprite.rect.topleft = (self.rect.x + 10, self.rect.y+12 - self.attack_offset)
+                self.attack_sprite.rect.topleft = (self.rect.x + 10, self.rect.y+10 - self.attack_offset)
 
         if self.attack_timer < 0:
             self.attack_sprite = None
@@ -180,7 +182,7 @@ class Player(pygame.sprite.Sprite):
                 self.dead_timer = 300
             self.dead_timer -= self.game.delta_time
             if self.dead_timer > 280:
-                self.speed_y = -2
+                self.speed_y = -1
             else: self.speed_y += 0.05
 
 

@@ -32,6 +32,10 @@ class Game:
         self.load_first_state()
         self.game_loop()
 
+    def restart(self):
+        self.__init__
+        self.new()
+
     def game_loop(self) -> None:
         """The main game loop, used to update the game based on inputs and then rendering it on the screen."""
         while self.playing:

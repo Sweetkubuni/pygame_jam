@@ -27,7 +27,7 @@ def create_room(area, fw, fh, **kwargs):
     p_y = y * h;
 
     config = configparser.ConfigParser()
-    config.read(os.path.join(tilemaps, 'settings.ini'))
+    config.read(os.path.join('tilemaps', 'settings.ini'))
 
     world = config['world']
 
@@ -69,7 +69,7 @@ def create_room(area, fw, fh, **kwargs):
 
 def app():
     config = configparser.ConfigParser()
-    config.read(os.path.join(tilemaps, 'settings.ini'))
+    config.read(os.path.join('tilemaps', 'settings.ini'))
 
     world = config['world']
     field_width = int(world['field_width'])
@@ -80,7 +80,7 @@ def app():
         this generates the starting area; so... no enemies!!!
     """
 
-    with open(os.path.join(tilemaps, 'world.csv'), 'w', newline='') as csvfile:
+    with open(os.path.join('tilemaps', 'world.csv'), 'w', newline='') as csvfile:
         areawriter = csv.writer(csvfile, delimiter=',')
 
         for i in range(0, sky_height):

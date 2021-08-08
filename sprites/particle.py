@@ -1,11 +1,13 @@
 import pygame, math
 
 class Particle():
-    def __init__(self, tilemap, rect, animation: list, loop: bool, offset: tuple, particle_num: int, max_timer: int, interval: list, speed: float):
+    def __init__(self, tilemap, rect, animation: list, loop: bool, offset: tuple, particle_num: int, max_timer: int, interval: list, speed: float, gravity: bool):
 
         self.tilemap = tilemap
         self.rect = rect
         self.max_timer = max_timer
+
+        self.gravity = gravity
 
         self.pick_up = False
 
@@ -16,17 +18,14 @@ class Particle():
         
         self.particles = []
 
-        for i in range(particle_num):
-            try:
-                angle = interval[0] + (interval[1] - interval[0])*i/(particle_num-1)
-            except ZeroDivisionError: angle = interval[0]
+        for i in range(1, particle_num + 1):
+            if i == 1: angle = interval[0]
+            else: angle = interval[0] + (interval[1] - interval[0])*(i-1)/(particle_num-1)
             sprite = pygame.sprite.Sprite()
             sprite.rect = self.rect
             sprite.rect.topleft = self.rect.topleft
             self.particles.append([sprite, rect.x, rect.y, speed*math.cos(angle), speed*-math.sin(angle)])
-            
-            i += 1
-            
+
         self.timer = 0
 
     def update(self, tiles, rect, ass, first_update):
@@ -34,8 +33,10 @@ class Particle():
             for particle in self.particles:
                 particle[1] += particle[3] * self.tilemap.level.state.game.delta_time
                 particle[2] += particle[4] * self.tilemap.level.state.game.delta_time
-                # pseudo gravity
-                particle[4] += 0.05 * self.tilemap.level.state.game.delta_time
+
+                if self.gravity:
+                    # pseudo gravity
+                    particle[4] += 0.05 * self.tilemap.level.state.game.delta_time
 
                 particle[0].rect.x, particle[0].rect.y = int(particle[1]), int(particle[2])
 

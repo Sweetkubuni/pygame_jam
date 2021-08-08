@@ -15,6 +15,7 @@ class Enemy(pygame.sprite.Sprite):
         self.level_width = level_width
 
         self.dead = False
+        self.off_bounce = False
 
         self.collision_directions = {"left": False, "right": False, "bottom": False, "top": False}
 
@@ -60,7 +61,7 @@ class Enemy(pygame.sprite.Sprite):
 
         # Move to another area different to current one -> kill it! (for now)
         if self.rect.top < self.area_top or self.area_bottom > self.area_bottom:
-            self.dead = True
+            self.off_bounce = True
             
     def draw(self, layer):
         layer.blit(self.image, (self.rect.x-self.offset[0], self.rect.y-self.offset[1]))

@@ -2,7 +2,9 @@ import pygame, os
 from config.config import colours
 from sprites.text import Text
 from states.state import State
-from states.gameworld import Game_world
+from states.instructions import Instructions
+from tilemaps.app_single_output import app
+from sprites.player import Player
 
 class Main_menu(State):
     """The main menu"""
@@ -27,20 +29,24 @@ class Main_menu(State):
         self.text_loop = 30
         self.current_ani = self.zzz_animation
 
+        app()
+        self.game.player = Player(self.game, 100, 188)
+
         
     def load_sprites(self):
         self.all_sprites = pygame.sprite.Group()
-        main_menu = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "> Press ENTER To Start! <", colours["white"], False, self.game.GAME_WIDTH *.5, self.game.GAME_HEIGHT - 30, True)
+        main_menu = Text(self.game.game_canvas, os.path.join(self.game.font_directory,"alphbeta.ttf"), 22, "> Press ENTER <", colours["white"], False, self.game.GAME_WIDTH *.5, self.game.GAME_HEIGHT - 30, True)
         self.all_sprites.add(main_menu)
     
     
     def update(self):
         """Update the menu state."""
-        if self.game.actions[pygame.K_RETURN]:
-            game_world = Game_world(self.game)
-            game_world.enter_state()
-
         self.game.check_inputs()
+        
+        if self.game.actions[pygame.K_RETURN]:
+            instructions = Instructions(self.game)
+            instructions.enter_state()
+
 
     def render(self):
         """Render the menu state."""
@@ -61,7 +67,7 @@ class Main_menu(State):
 
         self.text_loop -= 1
         if self.text_loop < 0:
-            self.all_sprites.sprites()[0].update(content = ">Press ENTER To Start!<")
+            self.all_sprites.sprites()[0].update(content = ">Press ENTER<")
             if self.text_loop < -30: self.text_loop = 30
         else:
-            self.all_sprites.sprites()[0].update(content = "> Press ENTER To Start! <")
+            self.all_sprites.sprites()[0].update(content = "> Press ENTER <")
