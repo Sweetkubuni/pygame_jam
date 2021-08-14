@@ -8,6 +8,7 @@ INSTRUCTIONS:
 
 Changes to make:
 -Speed up mario's shovel and feet aaaaahh [ ]
+-fix shaking mario
 -fix camera vertical movement [ ] 
 -fix mario animations [ ]
 -make game objective more clear to the player -> pick up-coins [ ]
