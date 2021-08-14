@@ -6,6 +6,13 @@ INSTRUCTIONS:
 - Find chests and kill enemies to gain coins
 - Get as many coins as you can and set your high-score
 
+Changes to make:
+-Speed up mario's shovel and feet aaaaahh [ ]
+-fix camera vertical movement [ ] 
+-fix mario animations [ ]
+-make game objective more clear to the player -> pick up-coins [ ]
+-remove depth as score factor [ ]
+
 
 -------- CONTROLS -----------
 - Move -> Arrow keys "Left" and "Right" keys
